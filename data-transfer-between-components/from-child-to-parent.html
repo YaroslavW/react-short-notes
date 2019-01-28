@@ -19,7 +19,7 @@
         render(){
           return (
             <div>
-              <p>Child state is - {this.state.name} </p>
+              <button onClick={() => { this.props.updateData(this.state.name)}}>Click Me</button>
             </div>
           )
         }
@@ -29,11 +29,14 @@
         state = {
           name: 'It is PARENT state'
         }
+        updateData = value => {
+          this.setState({ name: value })
+        }
         render() {
           return (
             <div>
             <p>Parent state: {this.state.name} </p>
-            <Child />
+            <Child updateData={this.updateData}/>
             </div>
           )
         }
