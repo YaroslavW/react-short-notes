@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React [RU] Tutorial</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+    	class Sibling extends React.Component {
+    		render(){
+    			return(
+    				<h2>Siblings props = {this.props.name}</h2>
+    				)
+    		}
+    	}
+      class Child extends React.Component {
+        state ={
+          name: 'This is CHILD state'
+        }
+        render(){
+          return (
+            <div>
+              <button onClick={() => { this.props.updateData(this.state.name)}}>Click Me</button>
+            </div>
+          )
+        }
+      }
+
+      class Parent extends React.Component {
+        state = {
+          name: 'It is PARENT state'
+        }
+        updateData = value => {
+          this.setState({ name: value })
+        }
+        render() {
+          return (
+            <div>
+            <p>Parent state: {this.state.name} </p>
+            <Child updateData={this.updateData}/>
+            <Sibling name = {this.state.name}/>
+            </div>
+          )
+        }
+      }
+      ReactDOM.render(
+        <Parent />,
+        document.getElementById('root')
+      );
+
+    </script>
+
+  </body>
+</html>
