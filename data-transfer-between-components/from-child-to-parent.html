@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React [RU] Tutorial</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class Child extends React.Component {
+        state ={
+          name: 'This is CHILD state'
+        }
+        render(){
+          return (
+            <div>
+              <p>Child state is - {this.state.name} </p>
+            </div>
+          )
+        }
+      }
+
+      class Parent extends React.Component {
+        state = {
+          name: 'It is PARENT state'
+        }
+        render() {
+          return (
+            <div>
+            <p>Parent state: {this.state.name} </p>
+            <Child />
+            </div>
+          )
+        }
+      }
+      ReactDOM.render(
+        <Parent />,
+        document.getElementById('root')
+      );
+
+    </script>
+
+  </body>
+</html>
