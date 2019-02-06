@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React [RU] Tutorial</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+    class Dialog extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+      componentWillUpdate() {
+        console.log('Component is about to update...');
+      }
+
+      componentWillReceiveProps(nextProps){
+        this.props = nextProps;
+        console.log(nextProps)
+      }
+      componentDidUpdate(){
+        console.log('component has updated')
+      }
+
+      render() {
+        return <h1>{this.props.message}</h1>
+      }
+    };
+
+    class Controller extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          message: 'First Message'
+        };
+        this.changeMessage = this.changeMessage.bind(this);
+      }
+      changeMessage() {
+        this.setState({
+          message: 'Second Message'
+        });
+      }
+      render() {
+        return (
+          <div>
+            <button onClick={this.changeMessage}>Update</button>
+            <Dialog message={this.state.message}/>
+          </div>
+        );
+      }
+    };
+      ReactDOM.render(
+        <Controller />,
+        document.getElementById('root')
+      );
+
+    </script>
+
+  </body>
+</html>
