@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React [RU] Tutorial</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+    class MyComponent extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          message: ''
+        };
+        this.handleEnter = this.handleEnter.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+      }
+      
+      componentDidMount() {
+        document.addEventListener("keydown",this.handleKeyPress)
+      }
+      componentWillUnmount() {
+        document.removeEventListener("keydown", this.handleKeyPress)
+      }
+      
+      handleEnter() {
+        this.setState({
+          message: this.state.message + 'You pressed the enter key! '
+        });
+      }
+      handleKeyPress(event) {
+        if (event.keyCode === 13) { //Enter - key13
+          this.handleEnter();
+        }
+      }
+      render() {
+        return (
+          <div>
+            <h1>{this.state.message}</h1>
+          </div>
+        );
+      }
+    };
+      ReactDOM.render(
+        <MyComponent />,
+        document.getElementById('root')
+      );
+
+    </script>
+
+  </body>
+</html>
