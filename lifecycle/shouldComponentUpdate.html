@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React [RU] Tutorial</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class OnlyEvens extends React.Component {
+        constructor(props) {
+          super(props);
+        }
+        shouldComponentUpdate(nextProps, nextState) {
+          console.log('Should I update?');
+
+          if(nextProps.value%2===0){
+             return true;
+          } else {
+             return false
+          }
+
+        }
+        componentWillReceiveProps(nextProps) {
+          console.log('Receiving new props...');
+        }
+        componentDidUpdate() {
+          console.log('Component re-rendered.');
+        }
+        render() {
+          return <h1>{this.props.value}</h1>
+        }
+      };
+
+      class Controller extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            value: 0
+          };
+          this.addValue = this.addValue.bind(this);
+        }
+        addValue() {
+          this.setState({
+            value: this.state.value + 1
+          });
+        }
+        render() {
+          return (
+            <div>
+              <button onClick={this.addValue}>Add</button>
+              <OnlyEvens value={this.state.value}/>
+            </div>
+          );
+        }
+      };
+      ReactDOM.render(
+        <Controller />,
+        document.getElementById('root')
+      );
+
+    </script>
+
+  </body>
+</html>
