@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React [RU] Tutorial</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+    class MyComponent extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          display: true
+        }
+        this.toggleDisplay = this.toggleDisplay.bind(this);
+      }
+      toggleDisplay() {
+        this.setState({
+          display: !this.state.display
+        });
+      }
+      render() {
+        if(this.state.display) {
+          return (
+            <div>
+              <button onClick={this.toggleDisplay}>Toggle Display</button>
+              <h1>Displayed!</h1>
+            </div>
+          );
+        } else {
+          return (
+                  <div>
+              <button onClick={this.toggleDisplay}>Toggle Display</button>
+            </div>
+          )
+        }
+      }
+    };
+      ReactDOM.render(
+        <MyComponent />,
+        document.getElementById('root')
+      );
+
+    </script>
+
+  </body>
+</html>
