@@ -13,22 +13,39 @@
     <div id="root"></div>
     <script type="text/babel">
     const Display = props => {
-      return <h2>Time left - </h2>
+      return <h2>Time left - {props.timeLeft}</h2>
     }
     const Button = props => {
-      return <button>{props.time}</button>
+      let handleClickStart = () =>{
+        return props.startTimer(props.time)
+      }
+      return <button onClick={handleClickStart.bind(this)}>{props.time}</button>
     }
     class TimerOwn extends React.Component {
+      state = {
+        timeLeft: null,
+        timer: null,
+      }
+      startTimer(timeLeft){
+        let timer = setInterval(() => {
+          let timeLeft = this.state.timeLeft - 1
+          if(timeLeft === 0) {
+            clearInterval(timer)
+          }
+          this.setState({timeLeft})
+        }, 1000);
+        return this.setState({timer, timeLeft})
+      }
       render(){
         return (
           <div>
             <h1>Timer</h1>
             <div>
-              <Button time="5" />
-              <Button time="10" />
-              <Button time="15" />
+              <Button time="5" startTimer={this.startTimer.bind(this)}/>
+              <Button time="10" startTimer={this.startTimer.bind(this)}/>
+              <Button time="15" startTimer={this.startTimer.bind(this)}/>
             </div>
-            <Display />
+            <Display timeLeft={this.state.timeLeft}/>
           </div>
         )
       }
