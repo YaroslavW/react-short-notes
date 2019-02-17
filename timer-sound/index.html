@@ -13,6 +13,12 @@
     <div id="root"></div>
     <script type="text/babel">
     const Display = props => {
+      if(props.timeLeft === 0){
+        document.getElementById('music').play()
+      }
+      if(props.timeLeft === 0 || props.timeLeft === null){
+        return <div></div>
+      }
       return <h2>Time left - {props.timeLeft}</h2>
     }
     const Button = props => {
@@ -27,6 +33,7 @@
         timer: null,
       }
       startTimer(timeLeft){
+        clearInterval(this.state.timer)  //protection against simultaneous start of multiple timers
         let timer = setInterval(() => {
           let timeLeft = this.state.timeLeft - 1
           if(timeLeft === 0) {
@@ -46,6 +53,7 @@
               <Button time="15" startTimer={this.startTimer.bind(this)}/>
             </div>
             <Display timeLeft={this.state.timeLeft}/>
+            <audio id="music" preload="auto" src="media/crowd-laugh-3.mp3"></audio>
           </div>
         )
       }
