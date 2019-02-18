@@ -41,11 +41,7 @@
            </React.Fragment>
   }
 
-    class Navbar extends React.Component {
-      constructor(props){
-        super(props)
-      }
-      render(){
+  const Navbar = props => {   
         return (
           <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <a className="navbar-brand" href="#">Navbar</a>
@@ -54,12 +50,11 @@
             </button>
             <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
               <div className="navbar-nav">
-                   <Links items={this.props.itemsMenu} />
+                   <Links items={props.itemsMenu} />
               </div>
             </div>
           </nav>
-        )
-      }
+        )  
     }
       ReactDOM.render(
         <Navbar itemsMenu={itemsMenu} />,
