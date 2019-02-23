@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pass Data to Parent - React</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+   class Child extends React.Component {
+      state = {
+        name: 'Sveta'
+      }
+      changeName = event =>{
+        this.setState({
+          name: event.target.value
+        })
+      }
+      render() {
+        return (
+          <div>
+            <input value={this.state.name} onChange={this.changeName.bind(this)} />
+            <button onClick={()=>{this.props.forChange(this.state.name)}}>Click to change</button>
+         </div>
+        )
+      }
+    }
+    class Parent extends React.Component {
+      state ={
+        name:'Yaroslav'
+      }
+      handleChange = value =>{
+        this.setState({
+          name: value
+        })
+      }
+      
+      render(){
+        return (
+          <div>
+            <h1>Name is : {this.state.name}</h1>
+            <Child forChange={this.handleChange}/>
+          </div>
+        )
+      }
+    }
+      ReactDOM.render(
+        <Parent />,
+        document.getElementById('root')
+      );
+
+    </script>
+
+  </body>
+</html>
