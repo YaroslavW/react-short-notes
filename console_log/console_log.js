@@ -1,4 +1,5 @@
 // WRONG!!!!
+ // eslint-disable-next-line 
 render() {
     return (
       <div>
@@ -8,7 +9,8 @@ render() {
     );
   }
 
-// ==>  Wright Method   
+// ==>  Wright Method  
+ // eslint-disable-next-line  
 render() {
     return (
       <div>
@@ -19,6 +21,7 @@ render() {
   }
 
 // ==> Another popular solution widely in use :
+ // eslint-disable-next-line 
 render() {
     console.log(this.props.countries)
    return (
