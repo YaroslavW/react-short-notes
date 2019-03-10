@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+    body {
+        height: 5000px;
+    }
+    h1 {
+        position: fixed;
+        margin-top: 20px;
+        margin-left: 0px;
+        font-size: 2rem;
+ 
+    } 
+    #root {
+        position: fixed;
+        margin-top: 20px;
+        margin-left: 200px;
+        font-size: 2rem;
+    }
+    </style>
+  </head>
+  <body>
+      <h1>Scroll down:</h1>
+    <div id="root"></div>
+    <script>
+      window.onscroll = function() {
+        var scrolled = window.pageYOffset || document.documentElement.scrollTop;
+        console.log(scrolled);
+        document.getElementById('root').innerHTML = scrolled + 'px';
+      };
+    </script>
+  </body>
+</html>
