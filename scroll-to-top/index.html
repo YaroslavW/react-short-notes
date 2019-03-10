@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React [RU] Tutorial</title>
+    <!-- Bootstrap for icon top button -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- CSS from Me -->
+    <link rel="stylesheet" href="style.css">
+    <!-- React CDN -->
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+/** React components for scrolling back to the top of the page **/
+class ColoredContainer extends React.Component {
+  render () {
+    let containerStyle = {
+      backgroundColor: this.props.color
+    }
+    return <div key={this.props.color} className="container" style={containerStyle}></div>
+  }
+}
+
+class ScrollButton extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+        intervalId: 0
+    };
+  }
+  
+  scrollStep() {
+    if (window.pageYOffset === 0) {
+        clearInterval(this.state.intervalId);
+    }
+    window.scroll(0, window.pageYOffset - this.props.scrollStepInPx);
+  }
+  
+  scrollToTop() {
+    let intervalId = setInterval(this.scrollStep.bind(this), this.props.delayInMs);
+    this.setState({ intervalId: intervalId });
+  }
+  
+  render () {
+      return <button title='Back to top' className='scroll' 
+               onClick={ () => { this.scrollToTop(); }}>
+                <span className='arrow-up glyphicon glyphicon-chevron-up'></span>
+              </button>;
+   }
+} 
+
+class ScrollApp extends React.Component {
+  constructor() {
+    super();
+    
+    this.state = {
+      colors: ["#044747", "#079191", "#38adad", "#90e3e3", "#d5f7f7", "#6FF665", "#F67987"]
+    }
+  }
+  
+  render () {
+    return <div className="long">
+              {
+                this.state.colors.map(function(color) {
+                    return <ColoredContainer key={color} color={color}/>
+                })
+              }
+              <ScrollButton scrollStepInPx="50" delayInMs="16.66"/>
+           </div>
+  }
+}
+/*
+ * Render the ScrollApp component into the div with the id 'app'
+ */
+ReactDOM.render(<ScrollApp/>, document.getElementById('root'));
+
+    </script>
+
+  </body>
+</html>
