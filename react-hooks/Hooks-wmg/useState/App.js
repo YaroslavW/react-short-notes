@@ -7,17 +7,15 @@ import './styles.css'
 
 const App = () => {
     const [name, setName] = useState('')
-    const formSubmit = () => {
-        console.log('email sent!')
-    }
+
     return (
         <div className="App">
             <h1>Hello CodeSandbox</h1>
-            <h2>{name}</h2>
+
             <form
                 onSubmit={e => {
                     e.preventDefault()
-                    formSubmit()
+                    formSubmit(name, setName)
                 }}
             >
                 <input
@@ -30,7 +28,14 @@ const App = () => {
         </div>
     )
 }
-
+const formSubmit = (value, setValue) => {
+    console.log('email sent to ' + value + ' !')
+    setValue('')
+    console.log(name)
+}
 const rootElement = document.getElementById('root')
 ReactDOM.render(<App />, rootElement)
+
+// Полная ебань!
+// Данные сейта меняются, а поле инпут остается без изменений!
 
