@@ -12,10 +12,11 @@ const App = () => {
         <div className="App">
             <h1>Hello CodeSandbox</h1>
 
-            <form
+            <form id="form"
                 onSubmit={e => {
                     e.preventDefault()
                     formSubmit(name, setName)
+                    document.getElementById("form").reset();
                 }}
             >
                 <input
@@ -38,4 +39,5 @@ ReactDOM.render(<App />, rootElement)
 
 // Полная ебань!
 // Данные сейта меняются, а поле инпут остается без изменений!
-
+// Пришлось добавить
+// document.getElementById("form").reset();
