@@ -11,7 +11,8 @@ const demoData = Array.from({
 }));
 class App extends React.Component {
   state = {
-    list: demoData
+    list: demoData,
+    title: ''
   }
   tick() {
     const newList = [...this.state.list];
@@ -27,11 +28,17 @@ class App extends React.Component {
       this.tick();
     }, 1000);
   }
+  handleChange = (e) => {
+    this.setState({
+      title: e.target.value
+    })
+  }
   render() {
     return (
       <div className="App">
         <h1>Hello CodeSandbox</h1>
         <h2>Start editing to see some magic happen!</h2>
+        <input value={this.state.title} onChange={this.handleChange} />
         <List data={this.state.list} />
       </div>
     );

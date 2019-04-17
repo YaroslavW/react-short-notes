@@ -9,7 +9,8 @@ class List extends React.Component {
           {
             this.props.data.map(item => (
               <li key={item.id}>{item.name}</li>
-            ))}
+            ))
+          }
         </ul>
       </div>
     )
