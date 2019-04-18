@@ -1,7 +1,10 @@
-import React from "react";
+import * as React from "react";
 import ReactDOM from "react-dom";
 import List from './List';
 import "./styles.css";
+
+console.log(ReactDOM);
+// flushSync
 const COUNT = 5000;
 const demoData = Array.from({
   length: COUNT
@@ -12,16 +15,21 @@ const demoData = Array.from({
 class App extends React.Component {
   state = {
     list: demoData,
-    title: ''
+    title: 'Hello'
   }
   tick() {
-    const newList = [...this.state.list];
-    newList.forEach(item => {
-      item.name++;
-    });
-    this.setState({
-      list: newList
+    // ReactDOM.flushSync(()=>{
+    this.setState(state => {
+      const newList = [...state.list];
+      newList.forEach(item => {
+        item.name++;
+      });
+      return { list: newList }
     })
+    // })
+
+
+
   }
   componentDidMount() {
     setInterval(() => {
@@ -29,9 +37,10 @@ class App extends React.Component {
     }, 1000);
   }
   handleChange = (e) => {
-    this.setState({
-      title: e.target.value
-    })
+    const { value } = e.target;
+    this.setState(() => ({
+      title: value
+    }));
   }
   render() {
     return (
@@ -44,5 +53,7 @@ class App extends React.Component {
     );
   }
 }
+const ConcurrentMode = React.unstable_ConcurrentMode;
+console.log(ConcurrentMode);
 const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
+ReactDOM.render(<ConcurrentMode><App /></ConcurrentMode>, rootElement);
