@@ -20,17 +20,19 @@ class App extends React.Component {
   tick() {
     // ReactDOM.flushSync(()=>{
     this.setState(state => {
-      const newList = [...state.list];
-      newList.forEach(item => {
-        item.name++;
-      });
+      const newList = state.list.map(item => ({
+        ...item,
+        name: item.name++
+      }));
+      console.log(newList[0].name)
       return { list: newList }
-    })
-    // })
-
-
-
+    });
   }
+  // })
+
+
+
+
   componentDidMount() {
     setInterval(() => {
       this.tick();
