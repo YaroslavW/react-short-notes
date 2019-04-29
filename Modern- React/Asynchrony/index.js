@@ -59,3 +59,10 @@ const ConcurrentMode = React.unstable_ConcurrentMode;
 console.log(ConcurrentMode);
 const rootElement = document.getElementById("root");
 ReactDOM.render(<ConcurrentMode><App /></ConcurrentMode>, rootElement);
+
+// for concurrent mode:
+// 1 - setState like a function^ 
+// this.setState(() => ({
+//   title: value
+// }));
+// 
