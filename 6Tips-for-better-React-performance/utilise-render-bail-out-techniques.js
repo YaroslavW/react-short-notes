@@ -1,14 +1,14 @@
 // index.jsx
-export default function ParentComponent(props) {
-  return (
-    <div>
-      <SomeComponent someProp={props.somePropValue}
-    <div>
-      <AnotherComponent someOtherProp={props.someOtherPropValue} />
-    </div>
-   </div>
- )
-}
+// export default function ParentComponent(props) {
+//   return (
+//     <div>
+//       <SomeComponent someProp={props.somePropValue}
+//     <div>
+//       <AnotherComponent someOtherProp={props.someOtherPropValue} />
+//     </div>
+//    </div>
+//  )
+// }
 
 
 // ./SomeComponent.jsx
