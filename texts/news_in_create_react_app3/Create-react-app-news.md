@@ -65,10 +65,12 @@ CRA 3 включает в себя плагин ESLint, [eslint-plugin-Reaction-
 ```
 
 Поскольку хук  `useState` используется внутри условного блока, сборка завершится неудачно со следующим сообщением:<br/>
-```
+```html
 Failed to compile.
 ./src/App.js
-Line 7:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render react-hooks/rules-of-hooks
+Line 7:  React Hook "useState" is called conditionally. React Hooks<br/>
+ must be called in the exact same order in every component render<br/>
+ react-hooks/rules-of-hooks
 ```
 
 
