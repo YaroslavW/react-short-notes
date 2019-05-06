@@ -167,7 +167,8 @@ yarn add --exact react-scripts@3.0.0
 Автор перевода [Yaroslav Kolesnikov](https://github.com/YaroslavW "My gitHub")
 
 <hr>
-Немного об `Eject`<br/>
+
+Немного об `Eject` <br/>
 
 ### `Eject` ###  
 >Чтобы запустить react проект, вам нужно знать о таких вещах, как Webpack или Babel, которые могут стать камнем преткновения для людей, которые не хотят узнавать об этом.
