@@ -1,5 +1,5 @@
 # Что нового в приложении Create React App 3 #
-[React-logo](https://github.com/YaroslavW/react-short-notes/blob/master/texts/news_in_create_react_app3/img/cra3-logo.jpg "Logo CRA-3")
+![React-logo](https://github.com/YaroslavW/react-short-notes/blob/master/texts/news_in_create_react_app3/img/cra3-logo.jpg "Logo CRA-3")
 
 Выпущенное в конце апреля 2019 года приложение Create React App (CRA) 3 добавляет правила привязки к хукам и проектам TypeScript, а также другие улучшения и обновления версий для упрощения разработки приложений React.<br/>
 
