@@ -116,5 +116,38 @@ yarn create react-app my-typescript-app --typescript
 
  Конфигурация стандартного списка браузеров предназначена для широкого круга браузеров, находящихся в производстве, но, следуя инструкциям в этом файле [README](https://github.com/browserslist/browserslist#queries "gitHub browserslist/browserslist - Queries"), вы сможете определить свои собственные пользовательские запросы.<br/>
 
+## Установка базового URL ##
+Установка переменной среды `NODE_PATH` для списка абсолютных путей, разделенных двоеточиями (точка с запятой в Windows), позволяет Node.js искать модули в этих путях, чтобы избежать таких вещей, как:<br/>
+
+```javascript
+const myModule = require('../../../../../../myModule');
+```
+CRA 3 устраняет необходимость установки `NODE_PATH` в файле `.env` (эта переменная все еще рассматривается, но [устарела и будет удалена в следующем выпуске](https://github.com/facebook/create-react-app/blob/4b8b38bf7c55326f8d51ea9deeea76d7feee307d/packages/react-scripts/config/modules.js#L28 "gitHub CRA - Note that NODE_PATH is deprecated and will be removed")).<br/>
+
+Так что теперь вам нужно использовать `baseUrl` в файле `jsconfig.json` или `tsconfig.json` (последний для проектов TypeScript) в корне вашего проекта:<br/>
+
+```javascript
+  {
+    "compilerOptions": {
+      "baseUrl": "src"
+    },
+  }
+```
+Таким образом, вместо того, чтобы использовать что-то вроде:<br/>
+
+```jacascript
+import Menu from 'src/components/Menu';
+```
+Вы можете просто использовать:
+
+```javascript
+import Menu from 'components/Menu';
+```
+Не большое улучшение, но в CRA 3.0 единственными приемлемыми значениями для `baseUrl` являются `src` и `node_modules` (значение по умолчанию).<br/>
+
+[На этой странице](https://facebook.github.io/create-react-app/docs/importing-a-component#absolute-imports "CRA - Absolute Imports") вы можете найти больше информации об этой функции.<br/>
+
+
+
 
 [Esteban Herrera](https://blog.logrocket.com/whats-new-in-create-react-app-3-950049f54f92?fbclid=IwAR0EvZVyxIw5SAIzn2SQVdXNtQkDEKsZkfZIakONgm9m9d29Z6wCICurbk0 "What’s new in Create React App 3 Источник")
