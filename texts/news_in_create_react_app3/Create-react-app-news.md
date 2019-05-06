@@ -1,4 +1,5 @@
 # Что нового в приложении Create React App 3 #
+[React-logo](//https://github.com/YaroslavW/react-short-notes/tree/master/texts/news_in_create_react_app3/img/cra3-logo.jpg "Logo CRA-3")
 
 Выпущенное в конце апреля 2019 года приложение Create React App (CRA) 3 добавляет правила привязки к хукам и проектам TypeScript, а также другие улучшения и обновления версий для упрощения разработки приложений React.<br/>
 
@@ -65,7 +66,7 @@ CRA 3 включает в себя плагин ESLint, [eslint-plugin-Reaction-
 ```
 
 Поскольку хук  `useState` используется внутри условного блока, сборка завершится неудачно со следующим сообщением:<br/>
-```html
+```javascript
 Failed to compile.
 ./src/App.js
 Line 7:  React Hook "useState" is called conditionally. React Hooks
@@ -80,12 +81,12 @@ react-hooks/rules-of-hooks
 CRA 3 также добавил правила linting для проектов TypeScript через [typcript-eslint](https://github.com/typescript-eslint/typescript-eslint "gitHub - typescript-eslint").<br/>
 
 Помните, что вы можете создать проект TypeScript с помощью:
-```html
+```javascript
 npx create-react-app my-typescript-app --typescript
 ```
 Или
 
-```html
+```javascript
 yarn create react-app my-typescript-app --typescript
 ```
 [Здесь](https://github.com/facebook/create-react-app/blob/4b8b38bf7c55326f8d51ea9deeea76d7feee307d/packages/eslint-config-react-app/index.js#L55:L86 "Part code eslint-config-react-app/index.js on gitHub") вы можете увидеть конфигурацию ESLint для TypeScript в CRA 3.0, а [на этой странице](https://facebook.github.io/create-react-app/docs/setting-up-your-editor#displaying-lint-output-in-the-editor "Displaying Lint Output in the Editor CRA-Docs") вы найдете инструкции по включению поддержки TypeScript в расширении ESLint кода Visual Studio.<br/>
@@ -135,7 +136,7 @@ CRA 3 устраняет необходимость установки `NODE_PAT
 ```
 Таким образом, вместо того, чтобы использовать что-то вроде:<br/>
 
-```jacascript
+```javascript
 import Menu from 'src/components/Menu';
 ```
 Вы можете просто использовать:
@@ -147,7 +148,32 @@ import Menu from 'components/Menu';
 
 [На этой странице](https://facebook.github.io/create-react-app/docs/importing-a-component#absolute-imports "CRA - Absolute Imports") вы можете найти больше информации об этой функции.<br/>
 
+## Заключение ##
+Нет сомнений, что CRA продолжает улучшаться с каждым новым выпуском. Благодаря работе почти [50 коммиттеров](https://github.com/facebook/create-react-app/releases/tag/v3.0.0 "gitHub facebook/create-react-app - v3.0.0"), на этот раз он принес ряд полезных дополнений, улучшений и обновлений для внутренних и базовых инструментов.<br/>
 
+Если вы создали приложение React с CRA 2  и не ejected, то выполнить обновление до CRA 3 так же просто, как выполнить одну из следующих команд:<br/>
 
+```javascript
+npm install --save --save-exact react-scripts@3.0.0
+# Or
+yarn add --exact react-scripts@3.0.0
+```
 
-[Esteban Herrera](https://blog.logrocket.com/whats-new-in-create-react-app-3-950049f54f92?fbclid=IwAR0EvZVyxIw5SAIzn2SQVdXNtQkDEKsZkfZIakONgm9m9d29Z6wCICurbk0 "What’s new in Create React App 3 Источник")
+Если вы удалили `ejected` свое приложение, процесс обновления не является простым, поэтому подумайте, стоит ли возвращать проект до точки, предшествующей удалению, обновлению и, при необходимости, повторному извлечению.<br/>
+
+Удачного кодирования!<br/>
+
+Автор статьи [Esteban Herrera.](https://blog.logrocket.com/whats-new-in-create-react-app-3-950049f54f92?fbclid=IwAR0EvZVyxIw5SAIzn2SQVdXNtQkDEKsZkfZIakONgm9m9d29Z6wCICurbk0 "What’s new in Create React App 3 Источник") Оригинал доступен по ссылке. <br/>
+Автор перевода [Yaroslav Kolesnikov](https://github.com/YaroslavW "My gitHub")
+
+<hr>
+Немного об `Eject`<br/>
+
+### `Eject` ###  
+>Чтобы запустить react проект, вам нужно знать о таких вещах, как Webpack или Babel, которые могут стать камнем преткновения для людей, которые не хотят узнавать об этом.
+>
+>`create-react-app` предоставляет полностью настроенную среду с разумными значениями по умолчанию (и возможностью расширения). Большая часть работы, связанной с инфраструктурой, скрыта от вас, и всякий раз, когда в одном из зависимых пакетов происходят изменения, о которых вы позаботитесь - вам потребуется только обновить `react-scripts`.
+>
+>Я очень рекомендую [эту презентацию одного из авторов CRA](https://www.youtube.com/watch?v=G39lKaONAlA&t=29s "youtube - Dan Abramov - The Melting Pot of JavaScript"), она даст вам лучшее представление о проекте.
+>
+
