@@ -69,15 +69,52 @@ CRA 3 включает в себя плагин ESLint, [eslint-plugin-Reaction-
 Failed to compile.
 ./src/App.js
 Line 7:  React Hook "useState" is called conditionally. React Hooks
- must be called in the exact same order in every component render
- react-hooks/rules-of-hooks
+must be called in the exact same order in every component render
+react-hooks/rules-of-hooks
 ```
+В этом файле [README.md](https://github.com/facebook/create-react-app/tree/master/packages/eslint-config-react-app "eslint-config-react-app gitHub") (и, в частности, файле [index.js](https://github.com/facebook/create-react-app/blob/master/packages/eslint-config-react-app/index.js "create-react-app/index.js - gitHub")) вы можете узнать больше о конфигурации ESLint, используемой CRA.<br/>
 
+И на [этой странице](https://facebook.github.io/create-react-app/docs/setting-up-your-editor#displaying-lint-output-in-the-editor "Displaying Lint Output in the Editor CRA-docs") вы можете узнать, как настроить редактор для отображения вывода lint.<br/>
 
+## TypeScript linting ##
+CRA 3 также добавил правила linting для проектов TypeScript через [typcript-eslint](https://github.com/typescript-eslint/typescript-eslint "gitHub - typescript-eslint").<br/>
 
+Помните, что вы можете создать проект TypeScript с помощью:
+```html
+npx create-react-app my-typescript-app --typescript
+```
+Или
 
+```html
+yarn create react-app my-typescript-app --typescript
+```
+[Здесь](https://github.com/facebook/create-react-app/blob/4b8b38bf7c55326f8d51ea9deeea76d7feee307d/packages/eslint-config-react-app/index.js#L55:L86 "Part code eslint-config-react-app/index.js on gitHub") вы можете увидеть конфигурацию ESLint для TypeScript в CRA 3.0, а [на этой странице](https://facebook.github.io/create-react-app/docs/setting-up-your-editor#displaying-lint-output-in-the-editor "Displaying Lint Output in the Editor CRA-Docs") вы найдете инструкции по включению поддержки TypeScript в расширении ESLint кода Visual Studio.<br/>
 
+## Конфигурация списка браузеров - Browserslist ##
 
+[Browserslist](https://github.com/browserslist/browserslist "gitHub - browserslist") позволяет настроить набор версий браузера, чтобы изменить выходные данные сборки для создания совместимого кода и поддержки указанных версий браузера.<br/>
+
+Вы можете указать отдельные списки для производства и разработки. Например, если вы добавите следующую конфигурацию в файл `package.json`:
+
+```javascript
+"browserslist": {
+  "production": [
+    "cover 99.5%"
+  ],
+  "development": [
+    "last 2 chrome versions"
+  ]
+}
+```
+Производственная сборка будет ориентирована на браузеры, которые охватывают 99,5% глобального использования, тогда как сборка разработки будет ориентирована только на две последние версии Chrome.<br/>
+
+ Browserslist  использует [Can I use](https://caniuse.com/ "Can I use - Site") но вы можете использовать https://browserl.ist, чтобы просмотреть результаты этих запросов ([здесь](https://browserl.ist/?q=cover+99.5%25 "browserl.ist - cover 99.5%") и [здесь](https://browserl.ist/?q=last+2+chrome+versions "browserl.ist - last 2 chrome versions")) и проверить свои собственные.<br/>
+
+ Таким образом, вы можете установить [@ babel / polyfill](https://babeljs.io/docs/en/babel-polyfill "BABEL - @babel/polyfill") в качестве зависимости вашего проекта и импортировать его в начало файлов `src / index.js` или `src / index.tsx`, а Browserslist будет включать полифиллы при необходимости (полифилы не добавляются автоматически). На [этой странице](https://facebook.github.io/create-react-app/docs/supported-browsers-features "CRA - Supported Browsers and Features") вы можете найти больше информации о поддерживаемых языковых функциях.<br/>
+
+ Также, если вы хотите, чтобы CRA 3 обрабатывал CSS для сброса стилей CSS, он будет использовать PostCSS Normalize по умолчанию, который, в свою очередь, будет использовать конфигурацию Browserslist для адаптации своего вывода. Вам просто нужно добавить `@ import-normalize;` в любом месте вашего CSS файла (ов). Смотрите [эту страницу](https://facebook.github.io/create-react-app/docs/adding-css-reset "Adding a CSS Reset") для получения дополнительной информации.<br/>
+
+ Конфигурация стандартного списка браузеров предназначена для широкого круга браузеров, находящихся в производстве, но, следуя инструкциям в этом файле [README](https://github.com/browserslist/browserslist#queries "gitHub browserslist/browserslist - Queries"), вы сможете определить свои собственные пользовательские запросы.<br/>
 
 
 [Esteban Herrera](https://blog.logrocket.com/whats-new-in-create-react-app-3-950049f54f92?fbclid=IwAR0EvZVyxIw5SAIzn2SQVdXNtQkDEKsZkfZIakONgm9m9d29Z6wCICurbk0 "What’s new in Create React App 3 Источник")
