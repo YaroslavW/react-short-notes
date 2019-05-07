@@ -21,12 +21,6 @@ const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
 
 // Line 1: We added an import for useEffect
-
-// Line 4: We changed our class component into a function component
-
-// Line 5–10: we added an effect to our function component. This effect sets a timer after 3 
-// seconds that will change the text in the element with the id welcomeMessage. Because we passed 
-// an empty array to useEffect, this effect will only run once.
-
-// Line 11–17: We replaced the previous code in App.js to render an h1element having the id
-//  welcomeMessage, which is our target element.
+// Line 6: We create function component
+// Line 8–12: we added an effect to our function component. This effect sets a timer after 3 seconds that will change the text in the element with the id welcomeMessage. Because we passed an empty array to useEffect, this effect will only run once.
+// Line 14–16: We replaced the previous code in App.js to render an h1element having the id welcomeMessage, which is our target element.
