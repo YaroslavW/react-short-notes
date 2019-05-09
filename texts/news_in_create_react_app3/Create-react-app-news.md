@@ -178,3 +178,55 @@ yarn add --exact react-scripts@3.0.0
 >Я очень рекомендую [эту презентацию одного из авторов CRA](https://www.youtube.com/watch?v=G39lKaONAlA&t=29s "youtube - Dan Abramov - The Melting Pot of JavaScript"), она даст вам лучшее представление о проекте.
 >
 
+<hr>
+
+## После послединх обновлений `creat-react-app` не запускается! ##
+Так случилось, что сегодня я только попробовал создать с ноля приложение на основе `create-react-app`. Установка прошла успешно, но при попытке выполнить, как обычно - `npm start` в консоль посыпались ошибки и приложение напрочь отказалось запускаться.
+
+```javascript
+Starting the development server...
+
+events.js:174
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: spawn cmd ENOENT
+    at Process.ChildProcess._handle.onexit (internal/child_process.js:240:19)
+    at onErrorNT (internal/child_process.js:415:16)
+    at process._tickCallback (internal/process/next_tick.js:63:19)
+Emitted 'error' event at:
+    at Process.ChildProcess._handle.onexit (internal/child_process.js:246:12)
+    at onErrorNT (internal/child_process.js:415:16)
+    at process._tickCallback (internal/process/next_tick.js:63:19)
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! myapp@0.1.0 start: `react-scripts start`
+npm ERR! Exit status 1
+npm ERR!
+npm ERR! Failed at the myapp@0.1.0 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+```
+ Мысли были разные, но хороших о разрабочиках, выпускающих ***настолько сырую версию в продакшн*** не было!<br/>
+
+ Изучив вопрос более делатьно этот вопрос и порывшись в поиске ответа в гугле, я нашел вот это: - [npm start failed to start App](https://github.com/facebook/create-react-app/issues/6908 "gitHub - npm start failed to start App").
+
+ Постые рекомендации мне помогли, и я решил поделиться ими с вами, дорогие друзья. <br/>
+ 
+Итак, по порядку:
+1. Удаляем полностью папку `node_modules`.
+2. Идем в файл `package.json` и находим строку со скриптами в установленных зависимостях
+
+```javascript
+ "react-scripts": "3.0.1"
+```
+3. Меняем версию на старую :
+
+```javascript
+  "react-scripts": "2.1.8"
+```
+4. В консоли набираем `yarn install`, если вы используете - yarn, или   `npm install` - для npm и устанавливаем все зависимости заново.
+
+5. Спокойно запускаем приложение, как и прежде - `yarn start` или  `npm start`.
+
+Если это кому-либо будет полезно, то буду рад. Отдельное спасибо разработчикам, которые поделились этоим, и куча возмущений тем, кто выпускает такую лажу!
+ 
