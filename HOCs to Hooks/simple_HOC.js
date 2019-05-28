@@ -22,3 +22,10 @@ const MyHook = props => {
   const hookData = useMyHook(props.relevantData);
   return props.children(hookData);
 };
+
+// You would use these HOCs the same way you’d use any HOC — 
+// wrap the component you want to enhance with it.
+class MyComponent extends React.Component {
+//  …
+};
+const MyEnhancedComponent = withMyHook(MyComponent);
