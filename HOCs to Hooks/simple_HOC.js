@@ -10,3 +10,7 @@ const withMyHook = hookArgs => Comp => () => {
   const hookData = useMyHook(hookArgs);
   return <Comp {...hookData} {...props} />;
 };
+
+// const MyDecoratedComponent = withMyHook({ 
+//   some: ‘value’ 
+// })(MyComponent);
