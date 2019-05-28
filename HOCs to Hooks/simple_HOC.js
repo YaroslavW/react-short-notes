@@ -14,3 +14,11 @@ const withMyHook = hookArgs => Comp => () => {
 // const MyDecoratedComponent = withMyHook({ 
 //   some: ‘value’ 
 // })(MyComponent);
+
+
+// If your hook needs data based on props, 
+// you might want to consider using the render prop pattern instead:
+const MyHook = props => {
+  const hookData = useMyHook(props.relevantData);
+  return props.children(hookData);
+};
