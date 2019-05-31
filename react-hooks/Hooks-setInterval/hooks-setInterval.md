@@ -449,4 +449,103 @@ function Counter() {
 
 <hr>
 
+# Извлечение крюка (Hook) #
+
+Следует признать, что приведенный выше код может дезориентировать. Это смешно, чтобы смешать противоположные парадигмы. Также есть возможность испортить изменчивые ссылки.
+
+**Я думаю, что хуки предоставляют примитивы более низкого уровня, чем классы, но их прелесть в том, что они позволяют нам создавать и создавать лучшие декларативные абстракции.**
+
+В идеале я просто хочу написать это:
+
+```javascript
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  useInterval(() => {
+    setCount(count + 1);
+  }, 1000);
+
+  return <h1>{count}</h1>;
+}
+```
+Я скопирую и вставлю тело моего механизма ref в пользовательский Hook:
+
+```javascript
+function useInterval(callback) {
+  const savedCallback = useRef();
+
+  useEffect(() => {
+    savedCallback.current = callback;
+  });
+
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+
+    let id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+}
+```
+В настоящее время задержка `1000` жестко закодирована. Я хочу сделать это аргументом:
+
+```javascript
+function useInterval(callback, delay) {
+```
+Я буду использовать его при настройке интервала:
+
+```javascript
+  let id = setInterval(tick, delay);
+```
+Теперь, когда задержка может меняться между рендерами, мне нужно объявить ее в зависимости от моего эффекта интервала:
+
+```javascript
+   useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+
+    let id = setInterval(tick, delay);
+    return () => clearInterval(id);
+  }, [delay]);
+```
+Подождите, разве мы не хотим избежать сброса эффекта интервала и специально передаем `[]`, чтобы избежать его? Не совсем. Мы только хотели избежать его сброса при изменении обратного вызова. Но когда задержка меняется, мы хотим перезапустить таймер!
+
+Давайте проверим, работает ли наш код:
+
+```javascript
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  useInterval(() => {
+    setCount(count + 1);
+  }, 1000);
+
+  return <h1>{count}</h1>;
+}
+
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  useEffect(() => {
+    savedCallback.current = callback;
+  });
+
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+
+    let id = setInterval(tick, delay);
+    return () => clearInterval(id);
+  }, [delay]);
+}
+```
+*(См. Демонстрационную версию [CodeSandbox](https://codesandbox.io/s/xvyl15375w).)*
+
+Это работает! Теперь мы можем использовать `useInterval()` в любом компоненте и не слишком задумываться о деталях его реализации.
+
+## Бонус: приостановка интервала ##
+
 Автор статьи [Dan Abramov](https://overreacted.io/making-setinterval-declarative-with-react-hooks/) Оригинал статьи доступен по ссылке.<br/> Автор перевода [Yaroslav Kolesnikov](https://github.com/YaroslavW)
