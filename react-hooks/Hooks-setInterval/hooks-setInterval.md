@@ -548,4 +548,87 @@ function useInterval(callback, delay) {
 
 ## Бонус: приостановка интервала ##
 
+Допустим, мы хотим сделать паузу в нашем интервале, передав значение `null` в качестве `delay`:
+
+```javascript
+  const [delay, setDelay] = useState(1000);
+  const [isRunning, setIsRunning] = useState(true);
+
+  useInterval(() => {
+    setCount(count + 1);
+  }, isRunning ? delay : null);
+  ```
+  Как мы это реализуем? Ответ: не устанавливая интервал.
+
+  ```javascript
+    useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+  ```
+
+*(См. Демонстрационную версию [CodeSandbox](https://codesandbox.io/s/l240mp2pm7).)*
+
+Это оно. Этот код обрабатывает все возможные переходы: изменение задержки, приостановка или возобновление интервала. API `useEffect()` просит нас приложить дополнительные усилия для описания настройки и очистки, но добавить новые задания просто.
+
+## Бонус: Fun Demo ##
+
+С этим `useInterval()` Hook действительно весело играть. Когда побочные эффекты носят декларативный характер, гораздо проще совместно управлять сложным поведением.
+
+Например, задержка одного интервала может контролироваться другим:
+
+![react-counter](img/counter_inception-10cfc4b38497a46980d3a13048a56e36.gif)
+
+```javascript
+function Counter() {
+  const [delay, setDelay] = useState(1000);
+  const [count, setCount] = useState(0);
+
+  // Increment the counter.
+  useInterval(() => {
+    setCount(count + 1);
+  }, delay);
+
+  // Make it faster every second!
+  useInterval(() => {
+    if (delay > 10) {
+      setDelay(delay / 2);
+    }
+  }, 1000);
+
+  function handleReset() {
+    setDelay(1000);
+  }
+
+  return (
+    <>
+      <h1>Counter: {count}</h1>
+      <h4>Delay: {delay}</h4>
+      <button onClick={handleReset}>
+        Reset delay
+      </button>
+    </>
+  );
+}
+```
+*(См. Демонстрационную версию [CodeSandbox](https://codesandbox.io/s/znr418qp13).)*
+
+## Заключительные мысли ##
+
+К хукам нужно привыкнуть, особенно на границе императивного и декларативного кода. С их помощью вы можете создавать мощные декларативные абстракции, такие как [React Spring](https://www.react-spring.io/docs/hooks/basics "react-spring.io"), но иногда они могут определенно действовать вам на нервы.
+
+Для Крюков это раннее время, и определенно есть модели, которые мы должны разработать и сравнить. Не спешите принимать Hooks, если вы привыкли следовать хорошо известным «лучшим практикам». Есть еще много, чтобы попытаться обнаружить.
+
+Я надеюсь, что этот пост поможет вам понять общие подводные камни, связанные с использованием API, таких как `setInterval()`, с Hooks, шаблоны, которые могут помочь вам преодолеть их, и сладкий плод создания более выразительных декларативных API поверх них.
+
+
+
+
+
 Автор статьи [Dan Abramov](https://overreacted.io/making-setinterval-declarative-with-react-hooks/) Оригинал статьи доступен по ссылке.<br/> Автор перевода [Yaroslav Kolesnikov](https://github.com/YaroslavW)
