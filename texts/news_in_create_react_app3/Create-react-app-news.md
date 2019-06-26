@@ -215,7 +215,7 @@ C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;
 ```
 Если это не помогло, то далее можете последовать моему опыту.
 
-Изучив вопрос более делатьно этот вопрос и порывшись в поиске ответа в гугле, я нашел вот это: - [npm start failed to start App](https://github.com/facebook/create-react-app/issues/6908 "gitHub - npm start failed to start App").
+Изучив более делатьно этот вопрос и порывшись в поиске ответа в гугле, я нашел вот это: - [npm start failed to start App](https://github.com/facebook/create-react-app/issues/6908 "gitHub - npm start failed to start App").
 
  Постые рекомендации мне помогли, и я решил поделиться ими с вами, дорогие друзья. <br/>
  
