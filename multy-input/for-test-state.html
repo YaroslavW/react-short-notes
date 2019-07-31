@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React [RU] Tutorial</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+      class Items extends React.Component{
+        constructor(props){
+          super(props)
+          this.state={
+            number:'',
+            select: false
+          }
+        }
+
+        handleClick = (event)=>{
+          var val = event.target.value;
+          var sel = this.state.select;
+
+          this.setState({[val]:!sel})
+          console.log(this.state.number)
+        }
+        render(){
+          // let bgc = sel ? 'red' : '';
+          return(
+            <ul>
+              <li onClick={this.handleClick} 
+                // className={bgc} 
+                value="1">
+                Item - 1
+              </li>
+              <li onClick={this.handleClick} 
+                // className={bgc}
+                value="2">
+                Item -2
+               </li>
+            </ul>
+          )
+        }
+      }
+      ReactDOM.render(
+        <Items/>,
+        document.getElementById('root')
+      );
+
+    </script>
+
+  </body>
+</html>
