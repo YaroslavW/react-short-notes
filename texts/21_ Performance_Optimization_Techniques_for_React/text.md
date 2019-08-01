@@ -537,3 +537,122 @@ export default class InlineStyledComponents extends React.Component {
 
 В компоненте, созданном выше, у нас есть встроенные стили, прикрепленные к компоненту. Добавленный встроенный стиль является объектом JavaScript вместо тега стиля. Стиль «`backgroundColor`» необходимо преобразовать в эквивалентное свойство стиля CSS, после чего стиль будет применен. Это включает в себя сценарии и выполнение JavaScript. ***Лучший способ - импортировать файл CSS в компоненте***.
 
+## 11. Оптимизация условного рендеринга в React.
+
+Монтаж и демонтаж компонентов React являются дорогостоящими операциями. Чтобы обеспечить лучшую производительность приложения, мы должны обеспечить уменьшение количества операций монтажа и демонтажа.
+
+Существует несколько ситуаций, когда у нас есть условное отображение компонентов, на основе условия мы можем или не можем отображать определенные элементы. Смотрите сценарий ниже для более подробной информации.
+
+```javascript
+
+import React from "react";
+
+import AdminHeaderComponent from "./AdminHeaderComponent";
+import HeaderComponent from "./HeaderComponent";
+import ContentComponent from "./ContentComponent"
+
+export default class ConditionalRendering extends React.Component {
+  constructor() {
+    this.state = {
+      name: "Mayank"
+    }
+  }
+  
+  render() {
+    if(this.state.name == "Mayank") {
+      return (
+        <>
+          <AdminHeaderComponent></AdminHeaderComponent>
+          <HeaderComponent></HeaderComponent>
+          <ContentComponent></ContentComponent>
+        </>
+      )
+    } else {
+      return (
+        <>
+          <HeaderComponent></HeaderComponent>
+          <ContentComponent></ContentComponent>
+        </>
+      )
+    }
+  }
+}
+
+```
+
+В приведенном выше коде у нас есть условный оператор, в котором компонент отображается в соответствии с указанным условием. Если состояние содержит значение имени как «`Mayank`», «`AdminHeaderComponent`» не отображается. Условный оператор и условие «`if else`» вроде бы хорошо, но следующий код имеет недостаток производительности.
+
+Давайте оценим приведенный выше код: каждый раз, когда вызывается функция рендеринга и значение переключается между «`Mayank`» и другим значением, выполняется другой оператор `if-else`. Алгоритм сравнения запускает проверку, сравнивая тип элемента в каждой позиции. Во время алгоритма различий он видит, что «`AdminHeaderComponent`» недоступен, и первым компонентом, который необходимо отобразить, является «`HeaderComponent`».
+
+React будет наблюдать за расположением элементов, он видит, что компонент в Позиции 1 и Позиции 2 изменился, и размонтирует компоненты. Компоненты «HeaderComponent» и «ContentComponent» будут размонтированы и перемонтированы в позиции 1 и позиции 2. В идеале это не требуется, поскольку эти компоненты не меняются, но мы все равно должны размонтировать и перемонтировать эти компоненты. Это дорогостоящая операция. Следующий код может быть оптимизирован следующим образом:
+
+```javascript
+
+import React from "react";
+
+import AdminHeaderComponent from "./AdminHeaderComponent";
+import HeaderComponent from "./HeaderComponent";
+import ContentComponent from "./ContentComponent"
+
+export default class ConditionalRendering extends React.Component {
+  constructor() {
+    this.state = {
+      name: "Mayank"
+    }
+  }
+  
+  render() {
+    return (
+      <>
+        { this.state.name == "Mayank" && <AdminHeaderComponent></AdminHeaderComponent> }
+        <HeaderComponent></HeaderComponent>
+        <ContentComponent></ContentComponent>
+      </>
+    )
+  }
+}
+
+```
+
+В приведенном выше коде, когда «`name`» не является «`Mayank`», React помещает «`null`» в позицию 1. Когда происходит различие DOM, элемент в позиции 1 изменяется с «`AdminHeaderComponent`» на ноль, но компонент в позиции 2 и положение 3 остается прежним. Поскольку элементы одинаковы, компоненты не размонтированы. Следовательно, сокращается «Размонтирование» и «Монтаж» компонентов в приложении.
+
+Для получения более подробной документации см. [Следующее](https://medium.com/@cowi4030/optimizing-conditional-rendering-in-react-3fee6b197a20 "Optimizing Conditional Rendering in React")
+
+## 12. Не извлекайте данные в методе «рендеринга» - `render()`.
+
+Метод Render - наиболее знакомое событие жизненного цикла для разработчиков React. В отличие от любого другого события жизненного цикла, у нас есть основной принцип, согласно которому функция render () является чистой функцией.
+
+### Что означает «Pure Function» - чистая функция для метода «Render».
+
+Сохранение функции в чистоте означает, что мы должны убедиться, что «setState», запрос к собственному элементу DOM и все, что может изменить состояние приложения, не должны вызываться или вызываться. Функция *никогда не должна обновлять состояние приложения*. Проблема с обновлением состояния компонента заключается в том, что при обновлении состояния он запускает другой цикл рендеринга, который внутренне может запускать другой цикл рендеринга, и это может продолжаться рекурсивно.
+
+```javascript
+
+import React from "react";
+
+export default class RenderFunctionOptimization extends React.Component {
+  constructor() {
+    this.state = {
+      name: "Mayank"
+    }
+  }
+  
+  render() {
+    this.setState({ 
+      name: this.state.name + "_" 
+    });
+    
+    return (
+      <div>
+        <b>User Name: {this.state.name}</b>
+      </div>
+    );
+  }
+}
+
+```
+
+В приведенном выше коде каждый раз, когда вызывается функция рендеринга, она обновляет состояние, и как только состояние обновляется, компонент перерисовывается. Следовательно, обновление состояния может привести к рекурсивному вызову функции «`render`».
+
+Функция рендеринга должна оставаться «чистой», чтобы гарантировать, что компонент ведет себя и рендерит согласованно.
+
