@@ -656,3 +656,135 @@ export default class RenderFunctionOptimization extends React.Component {
 
 Функция рендеринга должна оставаться «чистой», чтобы гарантировать, что компонент ведет себя и рендерит согласованно.
 
+## 13. Создайте границы ошибок для компонентов.
+
+Вы можете легко столкнуться с ситуацией, когда рендеринг компонента может привести к ошибке. В таких случаях ошибка компонента не должна нарушать работу всего приложения. Создание границ ошибок гарантирует, что приложение не сломается, в случае ошибки в конкретном компоненте.
+
+Границы ошибок (Error boundaries) - это компонент React, который перехватывает ошибки JavaScript в любом месте дочернего компонента, мы можем содержать ошибки, регистрировать сообщения об ошибках и иметь механизм отката для сбоя компонента пользовательского интерфейса.
+
+Границы ошибок основаны на концепции «Компоненты высшего порядка» - (Higher Order Components - HOC).
+
+Для получения более подробной информации о компоненте высшего порядка, обратитесь к [следующему](https://levelup.gitconnected.com/introduction-to-reacts-higher-order-components-hocs-c42182fb634 "Introduction to React’s Higher Order Components (HOCs)")
+
+Границы ошибки включают в себя компонент высшего порядка, содержащий следующие методы: «`static getDerivedStateFromError ()`» и «`componentDidCatch ()`». Статическая функция используется для указания механизма возврата и получения нового состояния для компонента из полученной ошибки. А функция `componentDidCatch` используется для регистрации информации об ошибках в Приложении.
+
+См. Код ниже для границ ошибок - Error Boundaries:
+
+```javascript
+
+import React from 'react';
+
+export class ErrorBoundaries extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            hasErrors: false
+        }
+    }
+
+    componentDidCatch(error, info) {
+        console.dir("Component Did Catch Error");
+    }
+
+    static getDerivedStateFromError(error) {
+        console.dir("Get Derived State From Error");
+        return {
+            hasErrors: true
+        }
+    }
+
+    render() {
+
+        if(this.state.hasErrors === true) {
+            return <div>This is a Error</div>
+        }
+
+        return <div><ShowData name="Mayank" /></div>
+    }
+}
+
+export class ShowData extends React.Component {
+
+    constructor() {
+        super();
+        this.state = {
+            name: "Mayank"
+        }
+    }
+
+    changeData = () => {
+       this.setState({
+           name: "Anshul"
+       })
+    }
+    render() {
+
+        if(this.state.name === "Anshul") {
+            throw new Error("Sample Error")
+        }
+
+        return (
+            <div>
+                <b>This is the Child Component {this.state.name}</b>
+                <input type="button" onClick={this.changeData} value="Click To Throw Error" />
+            </div>
+        )
+    }
+}
+
+```
+
+Приведенный выше код выдает ошибку в случае, если «имя» обновляется до «Anshul». Компонент «ShowData» - это встраивание внутри компонента «ErrorBoundaries». Поэтому, если ошибка вызывается из функции «ShowData», она захватывается в родительском компоненте, и мы развертываем резервный пользовательский интерфейс, используя статическую функцию «`getDerivedStateFromError`», и регистрируем некоторые данные в событии жизненного цикла «`componentDidCatch`».
+
+## 14. Неизменяемые структуры данных для компонентов.
+
+React сосредоточен вокруг функционального программирования, где больше внимания уделяется функциональному программированию. Данные о состоянии и реквизитах в компоненте React должны быть неизменными на тот случай, если мы хотим, чтобы компонент работал согласованно. Мутация объектов может привести к противоречивым результатам.
+
+Давайте посмотрим код ниже для большего понимания:
+
+```javascript
+import React from "react"
+
+expoort default class ImmutableComponentData extends React.Component {
+  constructor() {
+    this.state = {
+      userInfo: {
+        name: "Mayank",
+        age: 30,
+        designation: "Software Architect"
+      }
+    }
+  }
+  
+  updateUser() {
+    this.setState({
+      userInfo: {
+        name: "OtherUser"
+      }
+    })
+  }
+ 
+  shouldComponentUpdate(nextProps, nextState) {
+    if(nextState.userInfo != this.state.userInfo) {
+      return true;
+    }
+  }
+  
+  render() {
+    return (
+      <>
+        <b>User Name: {this.state.userName}
+      </>
+    )
+  }
+}
+
+```
+
+В приведенном выше коде мы можем видеть, что внутри функции «`shouldComponentUpdate`» мы указали, что, если начальное значение «`userInfo`» отличается от нового значения «`userInfo`», компонент должен быть перерисован, иначе он не должен повторно визуализировать компонент.
+
+Для более подробной информации обратитесь к следующей [ссылке](https://blog.logrocket.com/immutability-in-react-ebe55253a1cc/?source=post_page--------------------------- "Immutability in React")
+
+## 15. Использование уникального ключа для итерации.
+
+
