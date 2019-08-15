@@ -5,7 +5,7 @@
 //  React 16 Lifecycle Methods
 
 class ComponentWithLifecycle extends React.Component {
-  //  Часто используемые методы ЖЦ (Жизненого цикла)
+  //  Часто используемые методы ЖЦ (Жизненного цикла)
   constructor() {
     //  - ЖЦ: Mounting  - Монтаж ( до рендера )
     //  - Цель: Инициализация состояния
