@@ -110,3 +110,96 @@ export default (state, action) => {
 
 Я добавил `default` case, который будет сохранять состояние неизменным, если тип действия не `rotate`. Значение по умолчанию есть в случае, если мы создаем действие, и мы забываем добавить `case`- случай для этого действия. Таким образом, мы не удаляем все состояние приложения - мы просто ничего не делаем и сохраняем то, что имели.
 
+Идем далее и выполним следующие команды:
+
+ 1 — Linux / Mac command
+ ```
+ touch src/store.js
+ ```
+ 2 — Windows command
+```
+echo "" > src\store.js
+```
+И также добавьте в него следующий код:
+
+```javascript
+import { createStore } from "redux";
+import rotateReducer from "reducers/rotateReducer";
+
+function configureStore(state = { rotating: true }) {
+  return createStore(rotateReducer,state);
+}
+
+export default configureStore;
+```
+Итак, мы создаем функцию с именем `configureStore`, в которую мы отправляем состояние по умолчанию, и мы создаем наше хранилище, используя созданный редуктор и состояние по умолчанию.
+
+Я не уверен, что вы видели мои импорты, они используют абсолютные пути, поэтому у вас могут возникнуть некоторые ошибки из-за этого. Исправление для этого является одним из двух:
+
+Первое:
+1 - Добавьте файл `.env` в ваше приложение следующим образом:
+```
+echo "NODE_PATH=./src" > .env
+```
+Или:
+2 - Установите cross-env глобально и измените стартовый скрипт из файла package.json следующим образом:
+```
+npm install -g cross-env
+```
+Добавить в `package.json`
+
+```json
+"start": "NODE_PATH=./src react-scripts start",
+```
+Теперь, когда мы настроили наше хранилище - `store`, наши действия - `action` и наш редуктор - `reducer`, нам нужно добавить новый класс в файл `src/App.css.` Этот класс приостановит вращающуюся анимацию логотипа.
+
+Итак, мы собираемся написать следующее внутри `src/App.css`:
+
+```css
+.App-logo-paused {
+  animation-play-state: paused;
+}
+```
+Итак, ваш файл `App.css` должен выглядеть примерно так:
+```css
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+}
+
+/* new class here */
+.App-logo-paused {
+  animation-play-state: paused;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+```
+Теперь нам нужно только изменить наш файл `src/App.js`, чтобы он слушал состояние нашего хранилища - store. А при нажатии на логотип он вызывает одно из действий - actions запуска или остановки.
+
+
