@@ -234,24 +234,27 @@ npm install -g cross-env
 ```javascript
 import { connect } from "react-redux";
 ```
+
 После этого мы экспортируем наш компонент приложения с помощью метода `connect` следующим образом:
 
 ```javascript
 export default connect()(App);
 ```
+
 Чтобы изменить состояние хранилища redux, нам понадобятся действия - `actions`, которые мы сделали ранее, поэтому давайте импортируем их также:
 
 ```javascript
 import { startAction } from "actions/startAction";
 import { stopAction } from "actions/stopAction";
 ```
+
 Теперь нам нужно извлечь состояние из нашего хранилища и сказать, что мы хотим, чтобы действия `start` и `stop` использовались для изменения состояния.
 
 Это будет сделано с помощью функции подключения - `connect`, которая принимает два параметра:
 
-* `mapStateToProps` - это используется для получения состояния `store`.
+- `mapStateToProps` - это используется для получения состояния `store`.
 
-* `mapDispatchToProps` - используется для извлечения действий -`actions` и отправки их в хранилище - `store`.
+- `mapDispatchToProps` - используется для извлечения действий -`actions` и отправки их в хранилище - `store`.
 
 Итак, давайте напишем в нашем `App.js` (в конце файла):
 
@@ -265,30 +268,30 @@ const mapDispatchToProps = dispatch => ({
   stopAction: () => dispatch(stopAction)
 });
 ```
+
 После этого давайте добавим их в нашу функцию подключения - `connect` следующим образом:
 
 ```javascript
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
 ```
+
 И прямо сейчас, внутри нашего компонента `App`, мы можем получить доступ к состоянию `store`, `startAction` и `stopAction` через `props`.
 
 Давайте изменим тег `img` на:
 
 ```javascript
-<img 
-  src={logo} 
-  className={
-    "App-logo" + 
-    (this.props.rotating ? "":" App-logo-paused")
-  } 
-  alt="logo" 
-  onClick={
-    this.props.rotating ? 
-      this.props.stopAction : this.props.startAction
-  }
+<img
+  src={logo}
+  className={"App-logo" + (this.props.rotating ? "" : " App-logo-paused")}
+  alt="logo"
+  onClick={this.props.rotating ? this.props.stopAction : this.props.startAction}
 />
 ```
-Итак, здесь мы говорим, что если состояние - store вращения - rotating  (`this.props.rotating`) истинно - `true`, то мы хотим, чтобы только имя класса приложения `App-logo` было установлено на наш `img`. Если это неверно, то мы также хотим, чтобы класс `app-logo-paused` был установлен в `className`. Таким образом, мы приостанавливаем анимацию.
+
+Итак, здесь мы говорим, что если состояние - store вращения - rotating (`this.props.rotating`) истинно - `true`, то мы хотим, чтобы только имя класса приложения `App-logo` было установлено на наш `img`. Если это неверно, то мы также хотим, чтобы класс `app-logo-paused` был установлен в `className`. Таким образом, мы приостанавливаем анимацию.
 
 Кроме того, если `this.props.rotating` имеет значение `true`, то мы хотим отправить в нашем store функцию `onClick` и изменить его обратно на `false`, и наоборот.
 
@@ -303,7 +306,8 @@ import { Provider } from "react-redux";
 
 import configureStore from "store";
 ```
-* [Provider](https://react-redux.js.org/api/provider): делает хранилище Redux доступным для любых вложенных компонентов, обернутых в функцию `connect`.
+
+- [Provider](https://react-redux.js.org/api/provider): делает хранилище Redux доступным для любых вложенных компонентов, обернутых в функцию `connect`.
 
 После этого вместо прямой визуализации нашего компонента приложения мы отображаем его через нашего провайдера, используя созданный нами store следующим образом:
 
@@ -312,41 +316,163 @@ ReactDOM.render(
   <Provider store={configureStore()}>
     <App />
   </Provider>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 ```
+
 Здесь мы могли бы использовать функцию `configureStore` с некоторым другим состоянием, например `configureStore({ rotating: false })`.
 
 Итак, ваш `index.js` должен выглядеть так:
 
 ```javascript
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 // new imports start
 import { Provider } from "react-redux";
 
 import configureStore from "store";
 // new imports stop
 
-import './index.css';
+import "./index.css";
 
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import App from "./App";
+import * as serviceWorker from "./serviceWorker";
 
 // changed the render
 ReactDOM.render(
   <Provider store={configureStore()}>
     <App />
   </Provider>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 // changed the render
 
 serviceWorker.unregister();
 ```
+
 Давайте пойдем дальше и посмотрим, работает ли наше приложение на Redux:
 
 ![react redax in action img](img/react_redux_2.gif)
+
 <center><small>React & Redux в действии</small></center>
 
 ## Использование создателей действий.
+
+При желании вместо `actions` - действий мы можем использовать создателей действий- [action creators](https://redux.js.org/basics/actions#action-creators), которые являются функциями, создающими действия.
+
+Таким образом, мы можем объединить наши два действия в одной функции и немного уменьшить наш код.
+
+Итак, давайте продолжим и создадим новый файл:
+
+1 — Linux / Mac command
+
+```
+touch src/actions/rotateAction.js
+```
+
+2 — Windows command
+
+```
+echo "" > src\actions\rotateAction.js
+```
+
+И добавьте этот код:
+
+```javascript
+const rotateAction = payload => {
+  return {
+    type: "rotate",
+    payload
+  };
+};
+export default rotateAction;
+```
+
+Мы собираемся отправить действие типа `rotate` с полезной нагрузкой, которую мы собираемся получить в компоненте App.
+
+Внутри компонента `src/App.js` нам нужно импортировать нашего нового создателя действий:
+
+```javascript
+import rotateAction from "actions/rotateAction";
+```
+
+Добавьте новую функцию в `mapDispatchToProps` следующим образом:
+
+`rotateAction`: получит (полезную нагрузку) и отправит `rotateAction` с полезной нагрузкой
+
+Измените функцию `onClick` на:
+
+```javascript
+onClick={() => this.props.rotateAction(!this.props.rotating)}
+```
+
+И, наконец, добавьте нашего нового создателя действий в `mapDispatchToProps` следующим образом:
+
+```javascript
+rotateAction: payload => dispatch(rotateAction(payload));
+```
+
+Мы также можем удалить старый импорт для старых действий, а также удалить их из `mapDispatchToProps`.
+
+Вот как должен выглядеть ваш новый `src/App.js`:
+
+```javascript
+import React, { Component } from "react";
+// new lines from here
+import { connect } from "react-redux";
+import rotateAction from "actions/rotateAction";
+
+//// new lines to here
+
+import logo from "./logo.svg";
+import "./App.css";
+
+class App extends Component {
+  render() {
+    console.log(this.props);
+    return (
+      <div className="App">
+        <header className="App-header">
+          <img
+            src={logo}
+            className={
+              "App-logo" + (this.props.rotating ? "" : " App-logo-paused")
+            }
+            alt="logo"
+            onClick={() => this.props.rotateAction(!this.props.rotating)}
+          />
+          <p>
+            Edit <code>src/App.js</code> and save to reload.
+          </p>
+          <a
+            className="App-link"
+            href="https://reactjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn React
+          </a>
+        </header>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  ...state
+});
+const mapDispatchToProps = dispatch => ({
+  rotateAction: payload => dispatch(rotateAction(payload))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
+```
+
+## Пример из реальной жизни с Paper Dashboard React.
+
+![Paper Dashboard React - image](img/react_redux_3.gif)
+
+<center><small>Paper Dashboard React </small></center>
