@@ -288,3 +288,65 @@ export default connect(mapStateToProps, mapDispatchToProps)(App);
   }
 />
 ```
+Итак, здесь мы говорим, что если состояние - store вращения - rotating  (`this.props.rotating`) истинно - `true`, то мы хотим, чтобы только имя класса приложения `App-logo` было установлено на наш `img`. Если это неверно, то мы также хотим, чтобы класс `app-logo-paused` был установлен в `className`. Таким образом, мы приостанавливаем анимацию.
+
+Кроме того, если `this.props.rotating` имеет значение `true`, то мы хотим отправить в нашем store функцию `onClick` и изменить его обратно на `false`, и наоборот.
+
+Мы почти закончили, но мы кое-что забыли.
+
+Мы еще не сказали нашему приложению, что у нас есть глобальное состояние, или, если хотите, что мы используем управление redux состоянием.
+
+Для этого мы заходим в `src/index.js`, мы импортируем провайдера из response-redux и вновь созданное хранилище, например, так:
+
+```javascript
+import { Provider } from "react-redux";
+
+import configureStore from "store";
+```
+* [Provider](https://react-redux.js.org/api/provider): делает хранилище Redux доступным для любых вложенных компонентов, обернутых в функцию `connect`.
+
+После этого вместо прямой визуализации нашего компонента приложения мы отображаем его через нашего провайдера, используя созданный нами store следующим образом:
+
+```javascript
+ReactDOM.render(
+  <Provider store={configureStore()}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
+```
+Здесь мы могли бы использовать функцию `configureStore` с некоторым другим состоянием, например `configureStore({ rotating: false })`.
+
+Итак, ваш `index.js` должен выглядеть так:
+
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom';
+// new imports start
+import { Provider } from "react-redux";
+
+import configureStore from "store";
+// new imports stop
+
+import './index.css';
+
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+
+// changed the render
+ReactDOM.render(
+  <Provider store={configureStore()}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
+// changed the render
+
+serviceWorker.unregister();
+```
+Давайте пойдем дальше и посмотрим, работает ли наше приложение на Redux:
+
+![react redax in action img](img/react_redux_2.gif)
+<center><small>React & Redux в действии</small></center>
+
+## Использование создателей действий.
