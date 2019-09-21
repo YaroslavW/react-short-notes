@@ -647,3 +647,322 @@ ReactDOM.render(
   document.getElementById("root")
 );
 ```
+Теперь нам нужно внести некоторые изменения в `src/layouts/Dashboard/Dashboard.jsx`. Нам нужно удалить состояние и функции, которые меняют состояние. Итак, удалите эти биты кода:
+
+Конструктор (между строками 16 и 22):
+
+```javascript
+constructor(props){
+  super(props);
+  this.state = {
+    backgroundColor: "black",
+    activeColor: "info",
+  }
+}
+```
+Функции состояния (между строками 41 и 46):
+```javascript
+handleActiveClick = (color) => {
+    this.setState({ activeColor: color });
+  }
+handleBgClick = (color) => {
+  this.setState({ backgroundColor: color });
+}
+```
+Боковые панели - sidebar `bgColor` и `activeColor` (строки 53 и 54):
+```javascript
+bgColor={this.state.backgroundColor}
+activeColor={this.state.activeColor}
+```
+Все `props` `FixedPlugin` (между строками 59–62):
+```javascript
+bgColor={this.state.backgroundColor}
+activeColor={this.state.activeColor}
+handleActiveClick={this.handleActiveClick}
+handleBgClick={this.handleBgClick}
+```
+Итак, мы остаемся с этим кодом внутри компонента макета `Dashboard`:
+
+```javascript
+import React from "react";
+// javascript plugin used to create scrollbars on windows
+import PerfectScrollbar from "perfect-scrollbar";
+import { Route, Switch, Redirect } from "react-router-dom";
+
+import Header from "components/Header/Header.jsx";
+import Footer from "components/Footer/Footer.jsx";
+import Sidebar from "components/Sidebar/Sidebar.jsx";
+import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
+
+import dashboardRoutes from "routes/dashboard.jsx";
+
+var ps;
+
+class Dashboard extends React.Component {
+  componentDidMount() {
+    if (navigator.platform.indexOf("Win") > -1) {
+      ps = new PerfectScrollbar(this.refs.mainPanel);
+      document.body.classList.toggle("perfect-scrollbar-on");
+    }
+  }
+  componentWillUnmount() {
+    if (navigator.platform.indexOf("Win") > -1) {
+      ps.destroy();
+      document.body.classList.toggle("perfect-scrollbar-on");
+    }
+  }
+  componentDidUpdate(e) {
+    if (e.history.action === "PUSH") {
+      this.refs.mainPanel.scrollTop = 0;
+      document.scrollingElement.scrollTop = 0;
+    }
+  }
+  render() {
+    return (
+      <div className="wrapper">
+        <Sidebar
+          {...this.props}
+          routes={dashboardRoutes}
+        />
+        <div className="main-panel" ref="mainPanel">
+          <Header {...this.props} />
+          <Switch>
+            {dashboardRoutes.map((prop, key) => {
+              if (prop.pro) {
+                return null;
+              }
+              if (prop.redirect) {
+                return <Redirect from={prop.path} to={prop.pathTo} key={key} />;
+              }
+              return (
+                <Route path={prop.path} component={prop.component} key={key} />
+              );
+            })}
+          </Switch>
+          <Footer fluid />
+        </div>
+        <FixedPlugin />
+      </div>
+    );
+  }
+}
+
+export default Dashboard;
+```
+Нам нужно подключить компоненты `Sidebar` и `FixedPlugin` к store.
+
+Для этого `src/components/Sidebar/Sidebar.jsx`:
+
+```javascript
+import { connect } from "react-redux";
+```
+И измените экспорт на:
+
+```javascript
+const mapStateToProps = state => ({
+  ...state
+});
+
+export default connect(mapStateToProps)(Sidebar);
+```
+И для `src/components/FixedPlugin/FixedPlugin.jsx`:
+```javascript
+import { connect } from "react-redux";
+import setBgAction from "actions/setBgAction";
+import setColorAction from "actions/setColorAction";
+```
+И экспорт теперь должен быть:
+```javascript
+const mapStateToProps = state => ({
+  ...state
+});
+
+const mapDispatchToProps = dispatch => ({
+  setBgAction: (payload) => dispatch(setBgAction(payload)),
+  setColorAction: (payload) => dispatch(setColorAction(payload))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FixedPlugin);
+```
+У нас будут следующие изменения:
+
+* везде, где вы найдете слово `handleBgClick`, вам нужно изменить его на `setBgAction`
+
+* везде, где вы найдете слово `handleActiveClick`, вам нужно изменить его на `setColorAction`
+
+Итак, компонент `FixedPlugin` теперь должен выглядеть так:
+```javascript
+import React, { Component } from "react";
+
+import { connect } from "react-redux";
+import setBgAction from "actions/setBgAction";
+import setColorAction from "actions/setColorAction";
+
+import Button from "components/CustomButton/CustomButton.jsx";
+
+class FixedPlugin extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: "dropdown show"
+    };
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick() {
+    if (this.state.classes === "dropdown") {
+      this.setState({ classes: "dropdown show" });
+    } else {
+      this.setState({ classes: "dropdown" });
+    }
+  }
+  render() {
+    return (
+      <div className="fixed-plugin">
+        <div className={this.state.classes}>
+          <div onClick={this.handleClick}>
+            <i className="fa fa-cog fa-2x" />
+          </div>
+          <ul className="dropdown-menu show">
+            <li className="header-title">SIDEBAR BACKGROUND</li>
+            <li className="adjustments-line">
+              <div className="badge-colors text-center">
+                <span
+                  className={
+                    this.props.bgColor === "black"
+                      ? "badge filter badge-dark active"
+                      : "badge filter badge-dark"
+                  }
+                  data-color="black"
+                  onClick={() => {
+                    this.props.setBgAction("black");
+                  }}
+                />
+                <span
+                  className={
+                    this.props.bgColor === "white"
+                      ? "badge filter badge-light active"
+                      : "badge filter badge-light"
+                  }
+                  data-color="white"
+                  onClick={() => {
+                    this.props.setBgAction("white");
+                  }}
+                />
+              </div>
+            </li>
+            <li className="header-title">SIDEBAR ACTIVE COLOR</li>
+            <li className="adjustments-line">
+              <div className="badge-colors text-center">
+                <span
+                  className={
+                    this.props.activeColor === "primary"
+                      ? "badge filter badge-primary active"
+                      : "badge filter badge-primary"
+                  }
+                  data-color="primary"
+                  onClick={() => {
+                    this.props.setColorAction("primary");
+                  }}
+                />
+                <span
+                  className={
+                    this.props.activeColor === "info"
+                      ? "badge filter badge-info active"
+                      : "badge filter badge-info"
+                  }
+                  data-color="info"
+                  onClick={() => {
+                    this.props.setColorAction("info");
+                  }}
+                />
+                <span
+                  className={
+                    this.props.activeColor === "success"
+                      ? "badge filter badge-success active"
+                      : "badge filter badge-success"
+                  }
+                  data-color="success"
+                  onClick={() => {
+                    this.props.setColorAction("success");
+                  }}
+                />
+                <span
+                  className={
+                    this.props.activeColor === "warning"
+                      ? "badge filter badge-warning active"
+                      : "badge filter badge-warning"
+                  }
+                  data-color="warning"
+                  onClick={() => {
+                    this.props.setColorAction("warning");
+                  }}
+                />
+                <span
+                  className={
+                    this.props.activeColor === "danger"
+                      ? "badge filter badge-danger active"
+                      : "badge filter badge-danger"
+                  }
+                  data-color="danger"
+                  onClick={() => {
+                    this.props.setColorAction("danger");
+                  }}
+                />
+              </div>
+            </li>
+            <li className="button-container">
+              <Button
+                href="https://www.creative-tim.com/product/paper-dashboard-react"
+                color="primary"
+                block
+                round
+              >
+                Download now
+              </Button>
+            </li>
+            <li className="button-container">
+              <Button
+                href="https://www.creative-tim.com/product/paper-dashboard-react/#/documentation/tutorial"
+                color="default"
+                block
+                round
+                outline
+              >
+                <i className="nc-icon nc-paper"></i> Documentation
+              </Button>
+            </li>
+            <li className="header-title">Want more components?</li>
+            <li className="button-container">
+              <Button
+                href="https://www.creative-tim.com/product/paper-dashboard-pro-react"
+                color="danger"
+                block
+                round
+                disabled
+              >
+                Get pro version
+              </Button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  ...state
+});
+
+const mapDispatchToProps = dispatch => ({
+  setBgAction: (payload) => dispatch(setBgAction(payload)),
+  setColorAction: (payload) => dispatch(setColorAction(payload))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FixedPlugin);
+```
+И мы сделали, вы можете запустить проект и посмотреть, как все отлично работает:
+
+![Ready Dashboard React-Redux](img/react_redux_4.gif)
+
+## Multiple reducers
