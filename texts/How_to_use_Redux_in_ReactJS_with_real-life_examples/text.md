@@ -476,3 +476,174 @@ export default connect(
 ![Paper Dashboard React - image](img/react_redux_3.gif)
 
 <center><small>Paper Dashboard React </small></center>
+
+Как вы увидите на картинке выше, я использую правое меню, чтобы изменить цвета меню слева. Это достигается путем использования состояний компонента и передачи этого состояния из родительского компонента в два меню и некоторые функции для изменения этого состояния.
+
+![React & React - image](img/reactredux_4.png)
+
+<center><small>небольшая диаграмма того, как приложение работает в данный момент </small></center>
+
+Я подумал, что это будет хороший пример, взять этот продукт и заменить состояния компонентов Redux.
+
+Вы можете получить это этими 3 способами:
+
+1. Загрузить с сайта [creative-tim.com](https://www.creative-tim.com/product/paper-dashboard-react)
+
+2. Загрузить с [Github](https://github.com/creativetimofficial/paper-dashboard-react)
+
+3. Клонировать репо с Github
+
+```
+git clone https://github.com/creativetimofficial/paper-dashboard-react.git
+```
+Теперь, когда у нас есть этот продукт, давайте перейдем к нему и снова установим redux и Reaction-redux:
+
+```
+npm install --save redux react-redux
+```
+После этого нам нужно создать действия - actions. Так как в правом меню у нас есть 2 цвета, которые устанавливают фон левого меню, и 5 цветов, которые меняют цвет ссылок, нам нужно 7 действий или 2 создателя действий - actions creator - и мы собираемся использовать этот второй вариант, так как он немного меньше кода для записи:
+
+1 — Linux / Mac commands
+```
+mkdir src/actions
+touch src/actions/setBgAction.js
+touch src/actions/setColorAction.js
+```
+2 — Windows commands
+```
+mkdir src\actions
+echo "" > src\actions\setBgAction.js
+echo "" > src\actions\setColorAction.js
+```
+После этого давайте создадим код действий следующим образом:
+`— src/actions/setBgAction.js`
+```javascript
+const setBgAction = (payload) => {
+  return {
+    type: "bgChange",
+    payload
+  }
+}
+export default setBgAction;
+```
+
+`— src/actions/setColorAction.js`
+```javascript
+const setColorAction = (payload) => {
+  return {
+    type: "colorChange",
+    payload
+  }
+}
+export default setColorAction;
+```
+Теперь, как и в первой части, нам нужен редуктор - reduser :
+
+1 — Linux / Mac commands
+```
+mkdir src/reducers
+touch src/reducers/rootReducer.js
+```
+2 — Windows commands
+```
+mkdir src\reducers
+echo "" > src\reducers\rootReducer.js
+```
+И код для `rootReducer`:
+```javascript
+export default (state, action) => {
+  switch (action.type) {
+    case "bgChange":
+      return {
+        ...state,
+        bgColor: action.payload
+      };
+    case "colorChange":
+      return {
+        ...state,
+        activeColor: action.payload
+      };
+    default:
+      return state;
+  }
+};
+```
+Как вы можете видеть здесь, в отличие от нашего первого примера, мы хотим сохранить наше старое состояние и обновить его содержимое.
+
+Нам также нуженo `store` - хранилище:
+
+1 — Linux / Mac command
+```
+touch src/store.js
+```
+2 — Windows command
+```
+echo "" > src\store.js
+```
+Код для этого:
+```javascript
+import { createStore } from "redux";
+import rootReducer from "reducers/rootReducer";
+
+function configureStore(state = { bgColor: "black", activeColor: "info" }) {
+  return createStore(rootReducer,state);
+}
+export default configureStore;
+```
+Внутри `src/index.js` нам нужно:
+```javascript
+// new imports start
+import { Provider } from "react-redux";
+
+import configureStore from "store";
+// new imports stop
+```
+А также измените функцию рендеринга:
+```javascript
+ReactDOM.render(
+  <Provider store={configureStore()}>
+    <Router history={hist}>
+      <Switch>
+        {indexRoutes.map((prop, key) => {
+          return <Route path={prop.path} key={key} component={prop.component} />;
+        })}
+      </Switch>
+    </Router>
+  </Provider>,
+  document.getElementById("root")
+);
+```
+Таким образом, файл `index.js` должен выглядеть следующим образом:
+
+```javascript
+import React from "react";
+import ReactDOM from "react-dom";
+import { createBrowserHistory } from "history";
+import { Router, Route, Switch } from "react-router-dom";
+// new imports start
+import { Provider } from "react-redux";
+
+import configureStore from "store";
+// new imports stop
+
+import "bootstrap/dist/css/bootstrap.css";
+import "assets/scss/paper-dashboard.scss";
+import "assets/demo/demo.css";
+
+import indexRoutes from "routes/index.jsx";
+
+const hist = createBrowserHistory();
+
+ReactDOM.render(
+  <Provider store={configureStore()}>
+    <Router history={hist}>
+      <Switch>
+        {indexRoutes.map((prop, key) => {
+          return <Route path={prop.path} key={key} component={prop.component} />;
+        })}
+      </Switch>
+    </Router>
+  </Provider>,
+  document.getElementById("root")
+);
+```
