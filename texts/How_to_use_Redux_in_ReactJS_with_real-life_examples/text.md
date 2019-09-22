@@ -966,3 +966,116 @@ export default connect(mapStateToProps, mapDispatchToProps)(FixedPlugin);
 ![Ready Dashboard React-Redux](img/react_redux_4.gif)
 
 ## Multiple reducers
+
+Поскольку вы можете иметь несколько действий, вы можете иметь несколько редукторов. Единственное, что вам нужно их объединить - мы увидим это чуть ниже.
+
+Давайте продолжим и создадим два новых редуктора для нашего приложения, один для `setBgAction` и один для `setColorAction`:
+
+1 — Linux / Mac commands
+```
+touch src/reducers/bgReducer.js
+touch src/reducers/colorReducer.js
+```
+2 — Windows commands
+```
+echo "" > src\reducers\bgReducer.js
+echo "" > src\reducers\colorReducer.js
+```
+После этого давайте создадим код reducer следующим образом:
+
+`— src/reducers/bgReducer.js`
+```javascript
+export default (state = {}, action) => {
+  switch (action.type) {
+    case "bgChange":
+      return {
+        ...state,
+        bgColor: action.payload
+      };
+    default:
+      return state;
+  }
+};
+```
+`— src/reducers/colorReducer.js`
+```javascript
+export default (state = {} , action) => {
+  switch (action.type) {
+    case "colorChange":
+      return {
+        ...state,
+        activeColor: action.payload
+      };
+    default:
+      return state;
+  }
+};
+```
+При работе с комбинированными редукторами необходимо добавить состояние по умолчанию в каждом из ваших редукторов, которые будут объединены. В моем случае я выбрал пустой объект, т.е.  `state = {};`
+
+И теперь наш `rootReducer` объединит эти два значения следующим образом:
+
+`— src/reducers/rootReducer.js`
+```javascript
+import { combineReducers } from 'redux';
+
+import bgReducer from 'reducers/bgReducer';
+import colorReducer from 'reducers/colorReducer';
+
+export default combineReducers({
+  activeState: colorReducer,
+  bgState: bgReducer
+});
+```
+Итак, мы говорим, что мы хотим, чтобы `colorReducer` ссылался на `props` `activeState` состояния приложения, а `bgReducer` - на `props` `bgState` состояния приложения.
+
+Это означает, что наше состояние больше не будет выглядеть так:
+
+```javascript
+state = {
+  activeColor: "color1",
+  bgColor: "color2"
+}
+```
+Теперь это будет выглядеть так:
+
+```javascript
+state = {
+  activeState: {
+    activeColor: "color1"
+  },
+  bgState: {
+    bgColor: "color2"
+  }
+}
+```
+Поскольку мы изменили наши редукторы, теперь мы объединили их в один, нам нужно также изменить наш `store.js`:
+
+`— src/store.js`
+```javascript
+import { createStore } from "redux";
+import rootReducer from "reducers/rootReducer";
+
+// we need to pass the initial state with the new look
+function configureStore(state = { bgState: {bgColor: "black"}, activeState: {activeColor: "info"} }) {
+  return createStore(rootReducer,state);
+}
+export default configureStore;
+```
+Поскольку мы изменили внешний вид состояния, теперь нам нужно изменить реквизиты внутри компонентов `Sidebar` и `FixedPlugin` на новый объект состояния:
+
+`-src/components/Sidebar/Sidebar.jsx`:
+
+Изменить строку 36 с
+
+```javascript
+<div className="sidebar" data-color={this.props.bgColor} data-active-color={this.props.activeColor}>
+```
+на
+```javascript
+<div className="sidebar" data-color={this.props.bgState.bgColor} data-active-color={this.props.activeState.activeColor}>
+```
+`— src/components/FixedPlugin/FixedPlugin.jsx:`
+Нам нужно изменить все `this.props.bgColor` на `this.props.bgState.bgColor`. И все `this.props.activeColor` для `this.props.activeState.activeColor`.
+
+Итак, новый код должен выглядеть так:
