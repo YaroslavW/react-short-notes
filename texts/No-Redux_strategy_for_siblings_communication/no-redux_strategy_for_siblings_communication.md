@@ -16,6 +16,7 @@ Redux - это здорово, но мы также должны знать ос
 Требование: Child1 имеет поле ввода, при вводе этого значения необходимо отправить его компоненту child2 через Parent.
 
 ## Parent Component - Родительский компонент.
+
 Сначала определите функцию обратного вызова - **Callback function** в `Parent` и отправьте ее как реквизиты - `props` для `Child1`.
 
 ```javascript
@@ -32,9 +33,9 @@ formChild1(params) {
 }
 ```
 
-Я установил переменную состояния `state` данных -`data` и обновил ее значение, используя функцию обратного вызова `fromChild1` и отправив значение состояния `Child2`. 
+Я установил переменную состояния `state` данных -`data` и обновил ее значение, используя функцию обратного вызова `fromChild1` и отправив значение состояния `Child2`.
 
-*Зачем использовать `state`? Потому что реквизиты -`props` являются неизменными, и всегда лучше передать состояние в качестве `props`. И если вы хотите передать статические данные, всегда используйте `props`. Используйте состояние - `state` для передачи динамических данных.*
+_Зачем использовать `state`? Потому что реквизиты -`props` являются неизменными, и всегда лучше передать состояние в качестве `props`. И если вы хотите передать статические данные, всегда используйте `props`. Используйте состояние - `state` для передачи динамических данных._
 
 ```javascript
 render() {
@@ -47,6 +48,53 @@ render() {
   );
 }
 ```
+
 ## Child-1.
 
+Установите `prop-types`, потому что `React.PropTypes` устарел, и React предлагает вам использовать `prop-types`.
 
+```javascript
+npm install prop-types
+```
+
+### Импортировать prop-types в child1.
+
+```javascript
+import PropTypes from "prop-types";
+```
+
+определить дочерний компонент
+
+```javascript
+class Child1 extends Component {
+  getContent(event) {
+    this.props.callback(event.target.value);
+  }
+  render() {
+    return (
+      <div>
+        <p>Child One</p>
+        <input
+          type="text"
+          onChange={this.getContent.bind(this)}
+          placeholder="Type Something in Child One"
+        />
+      </div>
+    );
+  }
+}
+```
+
+`getContent` получает входное значение `onChange` и отправляет его родителю через функцию обратного вызова.
+
+Определите prop-types для Child1:
+
+```javascript
+Child1.protoTypes = {
+  callback: PropTypes.func
+};
+```
+
+Мы проверяем тип функции обратного вызова.
+
+## Child-2.
