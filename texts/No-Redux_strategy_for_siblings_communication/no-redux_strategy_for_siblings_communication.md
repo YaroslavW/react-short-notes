@@ -11,3 +11,42 @@ Redux - это здорово, но мы также должны знать ос
 
 ![Data communication flow](img/react-no-redux-1.jpg)
 <small><center>Поток передачи данных</center></small>
+
+Поток
+Требование: Child1 имеет поле ввода, при вводе этого значения необходимо отправить его компоненту child2 через Parent.
+
+## Parent Component - Родительский компонент.
+Сначала определите функцию обратного вызова - **Callback function** в `Parent` и отправьте ее как реквизиты - `props` для `Child1`.
+
+```javascript
+constructor(){
+  super();
+  this.state= {
+    data : ""
+  }
+}
+formChild1(params) {
+  this.setState({
+    data : params
+  })
+}
+```
+
+Я установил переменную состояния `state` данных -`data` и обновил ее значение, используя функцию обратного вызова `fromChild1` и отправив значение состояния `Child2`. 
+
+*Зачем использовать `state`? Потому что реквизиты -`props` являются неизменными, и всегда лучше передать состояние в качестве `props`. И если вы хотите передать статические данные, всегда используйте `props`. Используйте состояние - `state` для передачи динамических данных.*
+
+```javascript
+render() {
+  return(
+    <div>
+      <p>Parent</p>
+    <Child callback={this.formChild1.bind(this)} />
+    <Child2 data={this.state.data} />
+    </div>
+  );
+}
+```
+## Child-1.
+
+
