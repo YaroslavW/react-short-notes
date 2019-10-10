@@ -254,3 +254,300 @@ export default App;
 
 
 ## Создаём функциональность для передачи данных между компонентами.
+
+Согласно [документации React](https://reactjs.org/docs/context.html)
+
+>*Context  в основном используется, когда некоторые данные должны быть доступны для многих компонентов на разных уровнях вложенности*.
+
+В `./src/App.js` создайте объект контекста.
+
+```javascript
+// Create context object
+export const AppContext = React.createContext();
+```
+Затем установите начальное состояние объекта, где мы храним наши данные, которые должны быть доступны из обоих инпутов.
+
+```javasript
+// Set up Initial State
+const initialState = {
+    inputText: '',
+};
+```
+Теперь создайте функцию `reducer`, которая будет обновлять наше начальное состояние каждый раз, когда значение любых инпутов будет изменено. Мы будем использовать эту функцию с `useReducer`.
+
+```javascript
+function reducer(state, action) {
+    switch (action.type) {
+        case 'UPDATE_INPUT':
+            return {
+                inputText: action.data
+            };
+
+
+        default:
+            return initialState;
+    }
+}
+```
+Согласно [реакт-документации](https://reactjs.org/docs/hooks-reference.html#usereducer)
+
+> *`useReducer` позволяет оптимизировать производительность для компонентов, которые запускают глубокие обновления, поскольку вы можете передавать диспетчеризацию вместо обратных вызовов.*
+
+Сначала нам нужно импортировать `useReducer` из реакта. Так что теперь первая строка `./src/App.js` должна выглядеть так.
+
+```javascript
+import React, { useReducer } from 'react';
+```
+Теперь нам нужно инициализировать состояние `useReducer`. Самый простой способ - передать начальное состояние в качестве второго аргумента. Мы можем сделать это, добавив:
+
+```javascript
+const [state, dispatch] = useReducer(reducer, initialState);
+```
+И последняя часть в `./src/App.js` - это обернуть компоненты `<Input_one />` и `<Input_two />` в `AppContext.Provider`. Каждый объект Context поставляется с компонентом Provider React, который позволяет потребляющим компонентам подписываться на изменения контекста. Провайдеры могут быть вложенными, чтобы переопределять значения глубже в дереве.
+
+Теперь `./src/App.js` должен выглядеть так:
+
+```javascript
+import React, { useReducer } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+
+//Material UI components
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Toolbar from '@material-ui/core/Toolbar';
+
+//Import our Inputs
+import Input_one from './components/Input_one';
+import Input_two from './components/Input_two';
+
+//Styles
+const useStyles = makeStyles({
+    toolbarTitle: {
+        flex: 1,
+    },
+});
+
+// Create context object
+export const AppContext = React.createContext();
+
+// Set up Initial State
+const initialState = {
+
+    inputText: '',
+
+};
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'UPDATE_INPUT':
+            return {
+                inputText: action.data
+            };
+
+
+        default:
+            return initialState;
+    }
+}
+
+function App() {
+
+  const classes = useStyles();
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+      <Container maxWidth="lg">
+          <CssBaseline />
+
+          {/*Title*/}
+          <Toolbar>
+              <Typography
+                  component="h2"
+                  variant="h5"
+                  color="inherit"
+                  align="center"
+                  noWrap
+                  className={classes.toolbarTitle}
+              >
+                  Pass data between react sibling components
+              </Typography>
+          </Toolbar>
+
+          {/*Inputs*/}
+          <Grid container spacing={1}>
+              <AppContext.Provider value={{ state, dispatch }}>
+                  <Input_one/>
+                  <Input_two/>
+              </AppContext.Provider>
+          </Grid>
+
+      </Container>
+  );
+}
+
+export default App;
+```
+Теперь нам нужно изменить наши компоненты `<Input_one />` и `<Input_two />`.
+
+Все последующие изменения будут полностью одинаковыми для обоих компонентов ввода. Сначала нам нужно импортировать `useContext` из реакт.
+
+```javascript
+import React, { useContext } from 'react';
+```
+Теперь нам нужно импортировать `AppContext` из компонента `App`.
+
+```javascript
+import { AppContext } from '../App'
+```
+Чтобы использовать наши значения состояния внутри компонента, нам нужно добавить
+```javascript
+const {state, dispatch} = useContext(AppContext);
+```
+Затем добавьте функцию, которая будет обновлять значение `inputText` состояния с помощью `dispatch`. Эта функция будет вызываться каждый раз, когда мы вводим что-либо в любой ввод.
+
+```javascript
+const changeInputValue = (newValue) => {
+
+    dispatch({ type: 'UPDATE_INPUT', data: newValue,});
+};
+```
+Теперь нам нужно установить значение для `state.inputText`, а событие `onChange` должно вызвать функцию `changeInputValue`.
+
+Теперь `./src/components/Input_one.js` должен выглядеть так:
+
+```javascript
+import React, { useContext } from 'react';
+import {makeStyles} from "@material-ui/core/styles/index";
+
+//Material UI components
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import InputBase from '@material-ui/core/InputBase';
+
+//Material UI Icons
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
+
+// Import Context
+import { AppContext } from '../App'
+
+const useStyles = makeStyles({
+    root: {
+        padding: '2px 4px',
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+    },
+    input: {
+        marginLeft: '8px',
+        flex: 1,
+    },
+    iconButton: {
+        padding: 10,
+    }
+});
+
+export default function Input_one() {
+
+    const classes = useStyles();
+
+    const {state, dispatch} = useContext(AppContext);
+
+    const changeInputValue = (newValue) => {
+
+        dispatch({ type: 'UPDATE_INPUT', data: newValue,});
+    };
+
+    return(
+        <React.Fragment>
+            <Grid item xs={12} md={6}>
+                <Paper className={classes.root}>
+                    <InputBase
+                        className={classes.input}
+                        placeholder="Input one"
+                        value={state.inputText}
+                        onChange={e => changeInputValue(e.target.value)}
+                    />
+                    <IconButton className={classes.iconButton} aria-label="search">
+                        <SearchIcon />
+                    </IconButton>
+                </Paper>
+            </Grid>
+        </React.Fragment>
+    )
+}
+```
+И `./src/components/Input_two.js` должен выглядеть так:
+
+```javascript
+import React, { useContext } from 'react';
+import {makeStyles} from "@material-ui/core/styles/index";
+
+//Material UI components
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import InputBase from '@material-ui/core/InputBase';
+
+//Material UI Icons
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
+
+
+//Import Context
+import { AppContext } from '../App'
+
+const useStyles = makeStyles({
+    root: {
+        padding: '2px 4px',
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+    },
+    input: {
+        marginLeft: '8px',
+        flex: 1,
+    },
+    iconButton: {
+        padding: 10,
+    }
+});
+
+
+export default function Input_two() {
+
+    const classes = useStyles();
+
+    const {state, dispatch} = useContext(AppContext);
+
+    const changeInputValue = (newValue) => {
+
+        dispatch({ type: 'UPDATE_INPUT', data: newValue,});
+    };
+
+    return(
+        <React.Fragment>
+            <Grid item xs={12} md={6}>
+                <Paper className={classes.root}>
+                    <InputBase
+                        className={classes.input}
+                        placeholder="Input two"
+                        value={state.inputText}
+                        onChange={e => changeInputValue(e.target.value)}
+                    />
+                    <IconButton className={classes.iconButton} aria-label="search">
+                        <SearchIcon />
+                    </IconButton>
+                </Paper>
+            </Grid>
+        </React.Fragment>
+    )
+}
+```
+Теперь введите что-нибудь в любые поля ввода, и вы увидите, что оба ввода будут обновлены и будут содержать одинаковые значения.
+
+![ввод значений в инпуты](img/react-gif.gif)
+
+## Добавим помощьник неизменяемости - immutability-helper.
