@@ -77,3 +77,180 @@ npm install @material-ui/icons
 
 ***
 ## Создаём компоненты React.
+
+> *В этой части я настрою структуру нашего проекта и создам весь пользовательский интерфейс.*
+
+Сначала создайте новые компоненты папок в каталоге `./src` нашего проекта. После этого в `./src/components` создайте два новых компонента (`Input_one.js`, `Input_two.js`). После всех этих шагов структура вашего проекта должна выглядеть так:
+
+![Структура проекта](img/react-2.jpg)
+
+На следующих шагах я изменю наши компоненты, чтобы создать приятный интерфейс.
+
+Измените `./src/components/Input_one.js`, чтобы создать первый инпут.
+
+```javascript
+import React from 'react';
+import {makeStyles} from "@material-ui/core/styles/index";
+
+//Material UI components
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import InputBase from '@material-ui/core/InputBase';
+
+//Material UI Icons
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
+
+const useStyles = makeStyles({
+    root: {
+        padding: '2px 4px',
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+    },
+    input: {
+        marginLeft: '8px',
+        flex: 1,
+    },
+    iconButton: {
+        padding: 10,
+    }
+});
+
+export default function Input_one() {
+    const classes = useStyles();
+
+    return(
+        <React.Fragment>
+            <Grid item xs={12} md={6}>
+                <Paper className={classes.root}>
+                    <InputBase
+                        className={classes.input}
+                        placeholder="Input one"
+                    />
+                    <IconButton className={classes.iconButton} aria-label="search">
+                        <SearchIcon />
+                    </IconButton>
+                </Paper>
+            </Grid>
+        </React.Fragment>
+    )
+}
+```
+Измените `./src/components/Input_two.js`, чтобы создать второй инпут.
+
+```javascript
+import React from 'react';
+import {makeStyles} from "@material-ui/core/styles/index";
+
+//Material UI components
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import InputBase from '@material-ui/core/InputBase';
+
+//Material UI Icons
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
+
+const useStyles = makeStyles({
+    root: {
+        padding: '2px 4px',
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+    },
+    input: {
+        marginLeft: '8px',
+        flex: 1,
+    },
+    iconButton: {
+        padding: 10,
+    }
+});
+
+export default function Input_two() {
+    const classes = useStyles();
+
+    return(
+        <React.Fragment>
+            <Grid item xs={12} md={6}>
+                <Paper className={classes.root}>
+                    <InputBase
+                        className={classes.input}
+                        placeholder="Input two"
+                    />
+                    <IconButton className={classes.iconButton} aria-label="search">
+                        <SearchIcon />
+                    </IconButton>
+                </Paper>
+            </Grid>
+        </React.Fragment>
+    )
+}
+```
+***Примечание***. Компоненты `Input_one` и `Input_two` практически одинаковы. Теперь главное отличие  `export default function Input_one()` и  `export default function Input_two()`.
+
+Теперь измените файл `./src/App.js`. В этом файле я создам Контейнер -`Container`, где будет храниться весь контент нашего приложения, добавлю заголовок и импортирую наши компоненты `<Input_one />` и `<Input_two />`.
+
+```javascript
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+
+//Material UI components
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Toolbar from '@material-ui/core/Toolbar';
+
+//Import our Inputs
+import Input_one from './components/Input_one';
+import Input_two from './components/Input_two';
+
+//Styles
+const useStyles = makeStyles({
+    toolbarTitle: {
+        flex: 1,
+    },
+});
+
+function App() {
+
+  const classes = useStyles();
+
+  return (
+      <Container maxWidth="lg">
+          <CssBaseline />
+
+          {/*Title*/}
+          <Toolbar>
+              <Typography
+                  component="h2"
+                  variant="h5"
+                  color="inherit"
+                  align="center"
+                  noWrap
+                  className={classes.toolbarTitle}
+              >
+                  Pass data between react sibling components
+              </Typography>
+          </Toolbar>
+
+          {/*Inputs*/}
+          <Grid container spacing={1}>
+              <Input_one/>
+              <Input_two/>
+          </Grid>
+
+      </Container>
+  );
+}
+
+export default App;
+```
+После всех этих шагов перейдите по адресу [http://localhost:3000](http://localhost:3000). Наш проект должен выглядеть так:
+
+![инпуты с Material UI](img/react-3.jpg)
+
+
+## Создаём функциональность для передачи данных между компонентами.
