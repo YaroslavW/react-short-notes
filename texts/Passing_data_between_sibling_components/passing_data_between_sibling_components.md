@@ -551,3 +551,224 @@ export default function Input_two() {
 ![ввод значений в инпуты](img/react-gif.gif)
 
 ## Добавим помощьник неизменяемости - immutability-helper.
+Так что теперь наше приложение работает так, как мы ожидали. Но давайте обновим наше начальное состояние в `./src/App.js`, добавим еще одно значение и отобразим его на странице. Так что теперь наш объект `initialState` должен быть таким:
+
+```javascript
+// Set up Initial State
+const initialState = {
+    inputText: '',
+    testText: 'Hello world'
+};
+```
+Теперь давайте отобразим `testText` на нашей странице. Наш файл `./src/App.js` должен быть таким:
+
+```javascript
+import React, { useReducer } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+
+//Material UI components
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Toolbar from '@material-ui/core/Toolbar';
+
+//Import our Inputs
+import Input_one from './components/Input_one';
+import Input_two from './components/Input_two';
+
+//Styles
+const useStyles = makeStyles({
+    toolbarTitle: {
+        flex: 1,
+    },
+});
+
+// Create context object
+export const AppContext = React.createContext();
+
+// Set up Initial State
+const initialState = {
+
+    inputText: '',
+    testText: 'Hello world'
+
+};
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'UPDATE_INPUT':
+            return {
+                inputText: action.data
+            };
+
+
+        default:
+            return initialState;
+    }
+}
+
+function App() {
+
+  const classes = useStyles();
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+      <Container maxWidth="lg">
+          <CssBaseline />
+
+          {/*Title*/}
+          <Toolbar>
+              <Typography
+                  component="h2"
+                  variant="h5"
+                  color="inherit"
+                  align="center"
+                  noWrap
+                  className={classes.toolbarTitle}
+              >
+                  Pass data between react sibling components
+              </Typography>
+          </Toolbar>
+
+          {/*Inputs*/}
+          <Grid container spacing={1}>
+              <AppContext.Provider value={{ state, dispatch }}>
+                  <Input_one/>
+                  <Input_two/>
+              </AppContext.Provider>
+          </Grid>
+
+          {/*display testText value*/}
+          <Toolbar>
+              <Typography
+                  component="h2"
+                  variant="h5"
+                  color="inherit"
+                  align="center"
+                  noWrap
+                  className={classes.toolbarTitle}
+              >
+                  {state.testText}
+              </Typography>
+          </Toolbar>
+      </Container>
+  );
+}
+
+export default App;
+```
+Если все правильно, вы должны увидеть текст «Hello world» под нашими входными данными. Начните вводить что-либо в любой ввод. Вы можете увидеть, что случилось. Наш текст "Hello word" исчез.
+
+![Изменяемость состояния](img/react-gif-1.gif)
+
+Это произошло потому, что в настоящее время каждый раз, когда вы что-то печатаете в любом вводе, вы полностью заменяете наш `initialState` объект просто новым состоянием `inputText`. Но есть решение, чтобы это исправить. Нам не нужно каждый раз заменять объект `initialState`, нам просто нужно обновить значение `inputText` и не затрагивать другие состояния. Чтобы это произошло, мы можем использовать библиотеку- [immutability-helper](https://github.com/kolodny/immutability-helper)-, которая очень хорошо документирована. Установите эту библиотеку, набрав команду в вашем терминале.
+
+```javascript
+npm install immutability-helper --save
+```
+Теперь нам нужно просто импортировать эту библиотеку в наш файл `./src/App.js` и обновить функцию редуктора в соответствии с документацией ***immutability-helper***. Итак, наш файл `./src/App.js` должен выглядеть так:
+
+```javascript
+import React, { useReducer } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+
+//Import immutability-helper
+import update from 'immutability-helper';
+
+//Material UI components
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Toolbar from '@material-ui/core/Toolbar';
+
+//Import our Inputs
+import Input_one from './components/Input_one';
+import Input_two from './components/Input_two';
+
+//Styles
+const useStyles = makeStyles({
+    toolbarTitle: {
+        flex: 1,
+    },
+});
+
+// Create context object
+export const AppContext = React.createContext();
+
+// Set up Initial State
+const initialState = {
+
+    inputText: '',
+    testText: 'Hello world'
+
+};
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'UPDATE_INPUT':
+            return update(state, { inputText: {$set: action.data}});
+
+
+        default:
+            return initialState;
+    }
+}
+
+function App() {
+
+  const classes = useStyles();
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+      <Container maxWidth="lg">
+          <CssBaseline />
+
+          {/*Title*/}
+          <Toolbar>
+              <Typography
+                  component="h2"
+                  variant="h5"
+                  color="inherit"
+                  align="center"
+                  noWrap
+                  className={classes.toolbarTitle}
+              >
+                  Pass data between react sibling components
+              </Typography>
+          </Toolbar>
+
+          {/*Inputs*/}
+          <Grid container spacing={1}>
+              <AppContext.Provider value={{ state, dispatch }}>
+                  <Input_one/>
+                  <Input_two/>
+              </AppContext.Provider>
+          </Grid>
+
+          {/*display testText value*/}
+          <Toolbar>
+              <Typography
+                  component="h2"
+                  variant="h5"
+                  color="inherit"
+                  align="center"
+                  noWrap
+                  className={classes.toolbarTitle}
+              >
+                  {state.testText}
+              </Typography>
+          </Toolbar>
+      </Container>
+  );
+}
+
+export default App;
+```
+Когда вы внесете эти изменения, ваше приложение должно работать как положено. Если вы введете что-то в любой ввод, заголовок «Hello world» все равно должен быть на странице. Теперь мы обновляем только те значения, с которыми работаем, а ***НЕ заменяем весь объект***.
+
+![Изменяемость состояния](img/react-gif-2.gif)
+
