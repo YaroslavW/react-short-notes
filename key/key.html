@@ -12,33 +12,28 @@
   <body>
     <div id="root"></div>
     <script type="text/babel">
-
       const frontEndFrameworks = [
-        'React',
-        'Angular',
-        'Ember',
-        'Knockout',
-        'Backbone',
-        'Vue'
+        "React",
+        "Angular",
+        "Ember",
+        "Knockout",
+        "Backbone",
+        "Vue"
       ];
 
       function Frameworks() {
-        const renderFrameworks = frontEndFrameworks.map((item,index)=><li key={index}>{item}</li>)
+        const renderFrameworks = frontEndFrameworks.map((item, index) => (
+          <li key={index}>{item}</li>
+        ));
         return (
           <div>
             <h1>Popular Front End JavaScript Frameworks</h1>
-            <ul>
-              {renderFrameworks}
-            </ul>
+            <ul>{renderFrameworks}</ul>
           </div>
         );
-      };
-      ReactDOM.render(
-        <Frameworks />,
-        document.getElementById('root')
-      );
-
+      }
+      ReactDOM.render(<Frameworks />, document.getElementById("root"));
     </script>
-
+    <!-- Простое и наглядное объяснение! -->
   </body>
 </html>
