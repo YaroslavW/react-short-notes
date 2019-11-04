@@ -137,8 +137,8 @@ Inline-styling прост и работает из коробки, но имее
 ```js
 import React from "react";
 
-import styles from "./my-beautiful-button.module.css"; // must have extension .module.css.
-// my-beautiful-button.module.css has the same styles as Button.css.
+import styles from "./my-beautiful-button.module.css"; //должен иметь расширение .module.css.
+// my-beautiful-button.module.css имеет те же стили, что и Button.css.
 
 const MyBeautifulButton = props => {
   return (
@@ -162,3 +162,29 @@ export default MyBeautifulButton;
 ---
 
 ## Preprocessors
+
+Использование препроцессоров, таких как [SCSS](https://sass-lang.com/), [LESS](http://lesscss.org/) или [Stylus](http://stylus-lang.com/), просто в React.
+
+Вам нужно добавить загрузчик препроцессора, а затем, как и обычный CSS, вы можете импортировать файлы.
+
+```js
+import React from "react";
+import "./button.scss";
+// <-- Как только у конфигов webpack есть нужный загрузчик, он должен работать как обычный scss.
+
+const MyBeautifulButton = props => {
+  return (
+    <div>
+      <button className={props.primary ? "button--primary" : "button"}>
+        Button
+      </button>
+    </div>
+  );
+};
+
+export default MyBeautifulButton;
+```
+
+---
+
+## CSS in JS
