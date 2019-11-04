@@ -8,15 +8,15 @@
 
 Вот способы стилизации компонентов, которые мы обсудим:
 
-* [Regular CSS](##RegularCSS)
+* [Regular CSS](##Regular-CSS)
 
-* [Inline Styling]()
+* [Inline Styling](##Inline-Styling)
 
-* [CSS Modules]()
+* [CSS Modules](##CSS-Modules)
 
-* [Preprocessors]()
+* [Preprocessors](##Preprocessors)
 
-* [CSS in JS]()
+* [CSS in JS](##CSS-in-JS)
 
 Мы собираемся заменить стили, приведенные ниже, используя разные способы стилизации компонентов.
 
@@ -64,3 +64,26 @@
 ---
 
 ## Regular CSS
+
+Это самый простой и легкий способ добавления стилей в компонент React.
+
+```js
+import React from 'react';
+import './BeautifulButton.css';
+
+const MyBeautifulButton = props => {
+  return (
+    <div>
+      <button className={props.primary ? 'button--primary' : 'button'}>
+        Button
+      </button>
+    </div>
+  );
+};
+
+export default MyBeautifulButton;
+```
+
+---
+
+## Inline Styling
