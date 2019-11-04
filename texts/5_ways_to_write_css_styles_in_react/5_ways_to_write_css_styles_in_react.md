@@ -8,7 +8,7 @@
 
 Вот способы стилизации компонентов, которые мы обсудим:
 
-* [Regular CSS](## Regular CSS)
+* [Regular CSS](##RegularCSS)
 
 * [Inline Styling]()
 
