@@ -133,3 +133,32 @@ Inline-styling прост и работает из коробки, но имее
 ---
 
 ## CSS Modules
+
+```js
+import React from "react";
+
+import styles from "./my-beautiful-button.module.css"; // must have extension .module.css.
+// my-beautiful-button.module.css has the same styles as Button.css.
+
+const MyBeautifulButton = props => {
+  return (
+    <div>
+      <button
+        className={props.primary ? styles["button--primary"] : styles.button}
+      >
+        Button
+      </button>
+    </div>
+  );
+};
+
+export default MyBeautifulButton;
+```
+
+Все стили из модуля CSS попадают в область действия того компонента, который его импортировал. Это означает, что вам не нужно беспокоиться о глобальных конфликтах имен.
+
+> **Примечание**: вы должны включить в расширение подмодель `.module`. В противном случае стили будут загружаться как обычный CSS, и у вас могут возникнуть конфликты имен.
+
+---
+
+## Preprocessors
