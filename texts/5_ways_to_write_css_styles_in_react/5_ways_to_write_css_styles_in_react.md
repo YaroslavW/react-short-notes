@@ -188,3 +188,192 @@ export default MyBeautifulButton;
 ---
 
 ## CSS in JS
+
+CSS в JS - это шаблон, в котором вы определяете все свои стили внутри компонента. Как встроенный стиль, но гораздо более мощный.
+
+Давайте посмотрим, как мы будем писать одинаковые стили кнопок, используя [Styled Components](https://www.styled-components.com/) и [Emotion](https://emotion.sh/).
+
+### Styled Components
+
+```js
+import React from 'react';
+
+import styled from 'styled-components';
+
+const MyBeautifulButton = props => {
+  const BeautifulButton = styled.button`
+    color: #494949;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: #ffffff;
+    padding: 20px;
+    font-size: 20px;
+    border: 4px solid #494949;
+    display: inline-block;
+    transition: all 0.4s ease 0s;
+    &:hover {
+      color: #ffffff;
+      background: #f6b93b;
+      border-color: #f6b93b;
+      transition: all 0.4s ease 0s;
+    }
+  `;
+
+  const BeautifulPrimaryButton = styled(Button)`
+    color: #ffffff;
+    background: #f6b93b;
+    border-color: #f6b93b;
+    &:hover {
+      color: #494949;
+      background: #ffffff;
+      border-color: #494949;
+    }
+  `;
+
+  return (
+    <div>
+      {props.primary ? (
+        <BeautifulPrimaryButton>Button </BeautifulPrimaryButton>
+      ) : (
+        <BeautifulButton>Button</BeautifulButton>
+      )}
+    </div>
+  );
+};
+
+export default MyBeautifulButton;
+```
+
+### Emotion
+
+В Emotion есть два способа добавления стилей:  `css API` и `styled API`.
+
+Вот пример того, как выглядит использование `css API`:
+
+```javascript
+//этот комментарий говорит babel преобразовывать jsx в вызовы функции с именем jsx вместо React.createElement
+/* @jsx jsx */
+import React from 'react';
+import { jsx, css } from '@emotion/core';
+
+const BeautifulButton = css`
+  color: #494949;
+  text-transform: uppercase;
+  text-decoration: none;
+  background: #ffffff;
+  padding: 20px;
+  font-size: 20px;
+  border: 4px solid #494949;
+  display: inline-block;
+  transition: all 0.4s ease 0s;
+  &:hover {
+    color: #ffffff;
+    background: #f6b93b;
+    border-color: #f6b93b;
+    transition: all 0.4s ease 0s;
+  }
+`;
+
+const BeautifulPrimaryButton = css`
+  ${Button};
+  color: #ffffff;
+  background: #f6b93b;
+  border-color: #f6b93b;
+  &:hover {
+    color: #494949;
+    background: #ffffff;
+    border-color: #494949;
+  }
+`;
+
+const MyBeautifulButton = props => {
+  return (
+    <div>
+      <button css={props.primary ? BeautifulPrimaryButton : BeautifulButton}>Button</button>
+    </div>
+  );
+};
+
+export default MyBeautifulButton;
+```
+
+`styled API` в Emotion очень похож на `Styled Components`. Вот пример:
+
+```js
+// этот комментарий говорит babel преобразовывать jsx в вызовы функции с именем jsx вместо React.createElement
+/* @jsx jsx */
+import React from 'react';
+import { jsx, css } from '@emotion/core';
+
+import styled from '@emotion/styled';
+
+const BeautifulButton = styled.button`
+color: #494949;
+text-transform: uppercase;
+text-decoration: none;
+background: #ffffff;
+padding: 20px;
+font-size: 20px;
+border: 4px solid #494949;
+display: inline-block;
+transition: all 0.4s ease 0s;
+&:hover {
+  color: #ffffff;
+  background: #f6b93b;
+  border-color: #f6b93b;
+  transition: all 0.4s ease 0s;
+}
+`
+
+const BeautifulPrimaryButton = styled(BeautifulButton)`
+color: #ffffff;
+background: #f6b93b;
+border-color: #f6b93b;
+&:hover {
+  color: #494949;
+  background: #ffffff;
+  border-color: #494949;
+}
+`
+
+const MyBeautifulButton = (props) => {
+  return (
+    <div>
+      {props.primary ? <BeautifulPrimaryButton>Button </BeautifulPrimaryButton> : <BeautifulButton>Button</BeautifulButton>}
+    </div>
+  );
+};
+
+export default MyBeautifulButton;
+```
+
+> **Примечание**: вы можете добавить плагин `babel`, чтобы избежать записи верхней строки необходимого файла.
+
+```
+/** @jsx jsx */
+```
+
+CSS в JS - это мощный паттерн. Это облегчает создание больших сложных веб-приложений.
+
+Между  Styled Components  и  Emotion есть одно главное отличие.
+
+Styled Component предлагает только стилизованный API - `styled API`. Но Emotion предлагает два способа добавления стилей: CSS - `css API` и `styled API`.
+
+> Рекомендация: для больших приложений мы рекомендуем использовать Emotion.
+
+Вот другие CSS в библиотеках JS, которые стоит проверить:
+
+* [Radium](https://github.com/FormidableLabs/radium)
+
+* [JSS](https://cssinjs.org/?v=v10.0.0)
+
+* [Aphrodite](https://github.com/Khan/aphrodite)
+
+Теперь вы сможете выбрать свои варианты, когда дело доходит до стилей компонентов! Какой из них вы предпочитаете?
+
+---
+Автор статьи [Ahmed Mansour](https://dev.to/ahmaman/5-ways-to-write-css-styles-in-react-3jo0?fbclid=IwAR3-6Yrzc3asTpnrQuIHQqD6yGo0kl1ZfeMrtIjU_HkN9U9bKVk9KuTAgYY)
+
+Автор перевода Yaroslav Kolesnikov [YaroslavW](https://github.com/YaroslavW "gitHub")
+
+Больше статей смотрите в моем блоге ["Простые советы"](http://abcinblog.blogspot.com/ "Простые советы - мой блог")
