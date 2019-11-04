@@ -88,3 +88,48 @@ export default MyBeautifulButton;
 ---
 
 ## Inline Styling
+
+```js
+import React from "react";
+
+const MyBeautifulButton = props => {
+  const button = {
+    color: "#494949",
+    textTransform: "uppercase",
+    textDecoration: "none",
+    background: "#ffffff",
+    padding: "20px",
+    fontSize: "20px",
+    border: "4px solid #494949",
+    display: "inline-block",
+    transition: "all 0.4s ease 0s"
+  };
+
+  const primaryButton = {
+    ...button,
+    color: "#ffffff",
+    background: "#f6b93b",
+    borderColor: "#f6b93b"
+  };
+
+  return (
+    <div>
+      <button style={props.primary ? primaryButton : button}>Button</button>
+    </div>
+  );
+};
+
+export default MyBeautifulButton;
+```
+
+> **Примечание**: верблюжий стиль - `camel-case` необходим для работы встроенного стиля! Например, **borderColor**.
+
+Inline-styling прост и работает из коробки, но имеет много ограничений.
+
+Например, нет прямого способа добавить эффект наведения - `hover effect`.
+
+> **Рекомендация**: используйте парадигму встроенного стиля только с небольшими простыми компонентами.
+
+---
+
+## CSS Modules
