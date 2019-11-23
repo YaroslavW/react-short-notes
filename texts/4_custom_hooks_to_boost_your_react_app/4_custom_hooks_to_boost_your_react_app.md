@@ -55,3 +55,95 @@ function App(props) {
 
 
 ## `useGeo`
+Этот хук получает текущую позицию и обновленное значение всякий раз, когда пользователь перемещает курсор:
+
+```js
+// =============>>> useGeo <<<=========
+function useGeo(opts) {
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [geo, setGeo] = useState({})
+  let isLoad = true
+  let id;
+
+  function onSuccess (event) {
+    if (isLoad) {
+      setIsLoading(false)
+      setGeo(event.coords)
+    }
+  }
+
+  function onFailure (error) {
+    if (isLoad) {
+      setIsLoading(false)
+      setError(error)
+    }
+  }
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(onSuccess, onFailure, opts);
+    id = navigator.geolocation.watchPosition(onSuccess, onFailure, opts);
+    return () => {
+      isLoad = false;
+      navigator.geolocation.clearWatch(id);
+    };
+  }, [opts])
+
+  return {geo, isLoading, error}
+}
+
+// usage of useGeo
+function App(props) {
+  const {geo, isLoading, error} = useGeo()
+
+  return !isLoading && !error ? (
+    <div>
+      <h2>Lat: {geo.latitude}</h2>
+      <h2>Lng: {geo.longitude}</h2>
+    </div>
+  ) : null;
+}
+```
+> Почему мы определяем переменную `isLoad`? 
+
+>Поскольку получение позиции является асинхронной операцией, возможно, что ваш компонент повторно выполнит рендеринг. Таким образом, мы запускаем функцию очистки, прежде чем она эффективно извлекает местоположение. С помощью этого обходного пути мы можем предотвратить запуск обработчиков `onSuccess` или `onFailure`, если компонент был отключен слишком рано.
+
+
+## useInterval
+Эффект useInterval, вероятно, является наиболее известным пользовательским хуком React, но здесь я покажу его реализацию Дэном Абрамовым, поскольку мы будем использовать его для следующего хука:
+
+```js
+// ===========>>> setInterval <<<===========
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if(delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);  
+}
+// Usage of useInterval
+function Counter() {
+  let [count, setCount] = useState(0);
+
+  useInterval(() => {
+    setCount(count + 1);
+  }, 1000);
+
+  return <h1>{count}</h1>
+}
+```
+Более подробно об этом хуке читайте мой перевод статьи Дэна Абрамова - 
+[Делаем setInterval декларативным с помощью React Hooks](https://github.com/YaroslavW/react-short-notes/blob/master/texts/Hooks-setInterval/hooks-setInterval.md)
+
+
+## `useTimer`
