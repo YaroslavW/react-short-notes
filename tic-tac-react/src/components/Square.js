@@ -1,8 +1,9 @@
 import React from 'react'
+import './Square.css'
 
 const Square = () => {
   return (
-    <div>0</div>
+    <div className="block">0</div>
   )
 }
 
