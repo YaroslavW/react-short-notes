@@ -1,0 +1,18 @@
+.box {
+  margin: auto;
+  width: 600px;
+  text-align: center;
+}
+
+button {
+  padding: 14px;
+  margin: 20px;
+}
+
+.plus {
+  background-color: green;
+}
+
+.minus {
+  background-color: blue;
+}

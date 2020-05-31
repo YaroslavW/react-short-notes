@@ -40,15 +40,23 @@ function App() {
             >
               <MenuIcon />
             </IconButton>
+            
 
             <Typography variant="h6" className={classes.title}>
-              <Link to="/">Home</Link>
+              <Link to="/" style={{ color: "white" }}>
+                Home
+              </Link>
+            </Typography>
+
+            <Typography variant="h6" className={classes.title}>
+              <Link to="/tryUseReducer" style={{ color: "white" }}>
+                TryUseReducer
+              </Link>
             </Typography>
             <Typography variant="h6" className={classes.title}>
-              <Link to="/tryUseReducer">TryUseReducer</Link>
-            </Typography>
-            <Typography variant="h6" className={classes.title}>
-              <Link to="/about">About</Link>
+              <Link to="/about" style={{ color: "white" }}>
+                About
+              </Link>
             </Typography>
 
             <Button color="inherit">Login</Button>

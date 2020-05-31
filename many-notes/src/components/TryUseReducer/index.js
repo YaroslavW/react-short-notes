@@ -1,6 +1,6 @@
 import React, { useReducer } from "react";
 import countReducer from './reducers/countReducer';
-
+import './style.css'
 const initialState = { count: 0 };
 
 function TryUseReducer() {
