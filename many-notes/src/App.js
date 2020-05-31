@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  white: {
+    color:"white",
+  }
 }));
 function App() {
   const classes = useStyles();
@@ -40,21 +43,20 @@ function App() {
             >
               <MenuIcon />
             </IconButton>
-            
 
             <Typography variant="h6" className={classes.title}>
-              <Link to="/" style={{ color: "white" }}>
+              <Link to="/" className={classes.white}>
                 Home
               </Link>
             </Typography>
 
             <Typography variant="h6" className={classes.title}>
-              <Link to="/tryUseReducer" style={{ color: "white" }}>
+              <Link to="/tryUseReducer" className={classes.white}>
                 TryUseReducer
               </Link>
             </Typography>
             <Typography variant="h6" className={classes.title}>
-              <Link to="/about" style={{ color: "white" }}>
+              <Link to="/about" className={classes.white}>
                 About
               </Link>
             </Typography>
