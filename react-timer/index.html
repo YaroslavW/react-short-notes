@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React [RU] Tutorial</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+  class Button extends React.Componnt {
+    
+      handleStart(){
+        return this.props.startTimer(this.props.time)
+      }
+      render(){
+        return  <button onClick={this.handleStart.bind(this)}>{this.props.time}</button>
+      }
+
+    }
+     
+    
+    class TimerDisplay extends React.Component {
+     render(){
+      //  if(this.props.timerleft === 0 ){
+      //    document.getElementById('end').play()
+      //  }
+      //  if(this.props.timerleft === 0 || this.props.timerleft === null){
+      //    return <div></div>
+      //  }
+      return (
+        <h1>Left - : {this.props.timerleft}</h1>
+      )
+     }
+ 
+    }
+    class Timer extends React.Component {
+      constructor(props){
+        super(props)
+        this.state={
+          timer: null,
+          timerleft: null
+
+        }
+        this.startTimer=this.startTimer.bind(this)
+      }
+      startTimer(timerleft){
+        clearInterval(this.state.timer)
+        let timer = setInterval(() => {
+          let timerleft = this.state.timerleft - 1;
+          if(timerleft === 0 ){
+            clearInterval(timer)
+            this.setState({timerleft})
+          }
+        }, 1000);
+        return this.setState({timer, timerleft})
+      }
+
+      render(){
+        return(
+          <div>
+            <h1>Timer</h1>
+            <Button time="5" startTimer={this.startTimer} />
+            <Button time="10" startTimer={this.startTimer} />
+            <Button time="15" startTimer={this.startTimer} />
+            <TimerDisplay timerleft={this.state.timerleft}/>
+            <audio id="end" preload="auto" src=""></audio>
+          </div>
+        )
+      }
+    }
+      ReactDOM.render(
+        <Timer />,
+        document.getElementById('root')
+      );
+
+    </script>
+
+  </body>
+</html>

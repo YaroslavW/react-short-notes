@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React [RU] Tutorial</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+    class TimerWraper extends React.Component {
+      constructor(props){
+        super(props)
+        this.state={
+          timer: null,
+          timeLeft: null,
+        }
+        this.timerStart=this.timerStart.bind(this)
+      }
+      timerStart(timeLeft){
+        clearInterval(this.state.timer)
+        let timer = setInterval(() => {
+          var timeLeft = this.state.timeLeft - 1
+          if (timeLeft === 0){
+            clearInterval(timer)
+          }
+          this.setState({timeLeft: timeLeft})
+        }, 1000);
+        return this.setState({ timer: timer, timeLeft: timeLeft})
+      }
+      render(){
+        return (
+          <div>
+            <h1>Timer</h1>
+            <div>
+              <Button time="5" timerStart={this.timerStart} />
+              <Button time="10" timerStart={this.timerStart} />
+              <Button time="15" timerStart={this.timerStart} />
+            </div>
+            <Display timeLeft={this.state.timeLeft} />
+            <audio id="end" preload="auto" src="media/crowd-laugh-3.mp3"></audio>
+          </div>
+        )
+      }
+    }
+    class Button extends React.Component {
+      handleTime(){
+        return this.props.timerStart(this.props.time)
+      }
+      render(){
+        return <button onClick={this.handleTime.bind(this)}>{this.props.time}</button>
+      }
+    }
+    class Display extends React.Component {
+
+      render(){
+        if (this.props.timeLeft === 0){
+          document.getElementById('end').play()
+        }
+        if(this.props.timeLeft === 0 || this.props.timeLeft === null) {
+          return <div></div>
+        }
+        return <h2>Осталось : {this.props.timeLeft} </h2>
+      }
+    }
+      ReactDOM.render(
+        <TimerWraper />,
+        document.getElementById('root')
+      );
+
+    </script>
+
+  </body>
+</html>

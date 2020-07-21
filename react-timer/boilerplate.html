@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React Timer</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Не используйте это в production -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+    const Display = props =>{
+      if (props.timeLeft === 0){
+          document.getElementById('end').play()
+        }
+        if(props.timeLeft === 0 || props.timeLeft === null) {
+          return <div></div>
+        }
+      return <h2>Осталось : {props.timeLeft}</h2>
+    }
+
+    
+    const Button = props => {
+      const handleStart =() =>{
+        return props.startTimer(props.time)
+      }
+      return <button onClick={handleStart.bind(this)}>{props.time}</button>
+    }
+    class Timer extends React.Component {
+      constructor(props){
+        super(props)
+        this.state = {
+          timer: null,
+          timeLeft: null,
+        }
+        this.startTimer = this.startTimer.bind(this)
+      }
+      startTimer(timeLeft){
+        clearInterval(this.state.timer)
+        let timer = setInterval(() => {
+          let timeLeft = this.state.timeLeft - 1
+          if(timeLeft === 0){
+            clearInterval(timer)
+          }
+          this.setState({timeLeft})
+        }, 1000);
+        return this.setState({timer, timeLeft})
+      }
+      render(){
+        return (
+          <div>
+            <h1>Timer</h1>
+            <div>
+              <Button time="5" startTimer={this.startTimer}/>
+              <Button time="10" startTimer={this.startTimer}/>
+              <Button time="15" startTimer={this.startTimer}/>
+            </div>
+            <Display timeLeft={this.state.timeLeft} />
+            <audio id="end" preload="auto" src="media/crowd-laugh-3.mp3"></audio>
+          </div>
+        )
+      }
+    }
+      ReactDOM.render(
+        <Timer />,
+        document.getElementById('root')
+      );
+
+    </script>
+
+  </body>
+</html>
